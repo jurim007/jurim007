@@ -14,11 +14,11 @@
   <img src="assets/counter/9.png" height="150" />
 </p>
 
+---
+
 <p align="center">
   <img src="assets/divider.gif" width="100%" />
 </p>
-
----
 
 <p align="center">
   <img src="https://skillicons.dev/icons?i=html,css,js,react,git,github,linux,mysql,bootstrap,ts,vite,kotlin,vscode" />
