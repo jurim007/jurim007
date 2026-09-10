@@ -38,15 +38,17 @@ jobs:
 
             const count = result.user.contributionsCollection.contributionCalendar.totalContributions;
             const digits = String(count).split("");
-            const digitWidth = 90;
+
+            const drawWidth = 90;
+            const stepWidth = 45;   // tight overlap; lower = closer together
             const digitHeight = 150;
-            const totalWidth = digits.length * digitWidth;
+            const totalWidth = (digits.length - 1) * stepWidth + drawWidth;
 
             const images = digits
               .map((d, i) => {
                 const bytes = fs.readFileSync(`assets/counter/${d}.png`);
                 const base64 = bytes.toString('base64');
-                return `<image href="data:image/png;base64,${base64}" x="${i * digitWidth}" y="0" width="${digitWidth}" height="${digitHeight}" />`;
+                return `<image href="data:image/png;base64,${base64}" x="${i * stepWidth}" y="0" width="${drawWidth}" height="${digitHeight}" />`;
               })
               .join("");
 
