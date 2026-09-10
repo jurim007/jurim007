@@ -1,0 +1,59 @@
+name: Update Contributions Counter
+on:
+  schedule:
+    - cron: "0 0 * * *"   # once a day; adjust as you like
+  workflow_dispatch: {}    # lets you trigger it manually from the Actions tab
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch contribution count and build SVG
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.METRICS_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const username = "jurim007";
+
+            const query = `
+              query {
+                user(login: "${username}") {
+                  contributionsCollection {
+                    contributionCalendar {
+                      totalContributions
+                    }
+                  }
+                }
+              }
+            `;
+
+            const result = await github.graphql(query, {
+              headers: { authorization: `token ${process.env.METRICS_TOKEN}` }
+            });
+
+            const count = result.user.contributionsCollection.contributionCalendar.totalContributions;
+            const digits = String(count).split("");
+            const digitWidth = 90;
+            const digitHeight = 150;
+            const totalWidth = digits.length * digitWidth;
+
+            const images = digits
+              .map((d, i) => `<image href="assets/counter/${d}.png" x="${i * digitWidth}" y="0" width="${digitWidth}" height="${digitHeight}" />`)
+              .join("");
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${digitHeight}">${images}</svg>`;
+
+            fs.writeFileSync('contributions.svg', svg);
+        env:
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+
+      - name: Commit and push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update contributions counter"
+          file_pattern: contributions.svg

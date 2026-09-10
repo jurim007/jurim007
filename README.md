@@ -1,17 +1,8 @@
-[![Header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=180&section=header&fontColor=ffffff)](https://github.com/yourusername)
+[![Header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=180&section=header&fontColor=ffffff)](https://github.com/jurim007)
 
-<h3 align="center">Total Profile Visits</h3>
+<h3 align="center">Total Contributions</h3>
 <p align="center">
-  <img src="assets/counter/0.png" height="150" />
-  <img src="assets/counter/1.png" height="150" />
-  <img src="assets/counter/2.png" height="150" />
-  <img src="assets/counter/3.png" height="150" />
-  <img src="assets/counter/4.png" height="150" />
-  <img src="assets/counter/5.png" height="150" />
-  <img src="assets/counter/6.png" height="150" />
-  <img src="assets/counter/7.png" height="150" />
-  <img src="assets/counter/8.png" height="150" />
-  <img src="assets/counter/9.png" height="150" />
+  <img src="contributions.svg" />
 </p>
 
 ---
