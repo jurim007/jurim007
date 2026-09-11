@@ -2,7 +2,7 @@ name: Update Contributions Counter
 on:
   schedule:
     - cron: "0 */6 * * *"   # every 6 hours, fully automatic
-  workflow_dispatch: {}      # manual button as backup
+  workflow_dispatch: {}
 
 jobs:
   update:
