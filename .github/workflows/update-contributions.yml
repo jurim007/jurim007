@@ -1,8 +1,8 @@
 name: Update Contributions Counter
 on:
   schedule:
-    - cron: "0 0 * * *"   # once a day; adjust as you like
-  workflow_dispatch: {}    # lets you trigger it manually from the Actions tab
+    - cron: "0 */6 * * *"   # every 6 hours, fully automatic
+  workflow_dispatch: {}      # manual button as backup
 
 jobs:
   update:
@@ -40,7 +40,7 @@ jobs:
             const digits = String(count).split("");
 
             const drawWidth = 90;
-            const stepWidth = 45;   // tight overlap; lower = closer together
+            const stepWidth = 45;
             const digitHeight = 150;
             const totalWidth = (digits.length - 1) * stepWidth + drawWidth;
 
