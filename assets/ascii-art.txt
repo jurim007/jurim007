@@ -1,48 +1,8 @@
-                                ,;p$pWEPXKKKKmw,,
-                              ;KK#KKKPEp##KKKKBBEX$KKKmw,
-                             pKKEKKKKKKKKBBb##KWWEEQD#KKKKKW,
-                         .,|$KK#KKKK#KBKKBBKKKDBKKKKKKKK#KK#KKKKp
-                       ,0|$E#KKKKKKKKKKBKKKKBKKKKBKKKKKKKKKKKKKKKKm
-                      /E#KKK#KKKKKKBBKKBBBBBBBBKKKKKKBKKKKKKKKKKKKKKB
-                      KKK#KKKKKKKKKKKKKKKBKKKKKKKKKKKKKKKKKKKKKKKKBKKN
-                    ,KKKBKKKKPPEEPPKKKKKKKKKKKPP5LL5$PPPPPKKKKKKKKKKKKp
-                   #KKKKKKP*****'|*L5EPKPEPL***```*****LL55PPKKKKKKKKKKm
-                  (KKKKKP``    `    '***````          ```**LL5PPPPKKKKKN
-                  #KKKP                                    '**|L|$0KKKKB
-                 ,KKKP                                        '*LLL$KK#KN
-                 #KKH*                                         `LLH|IK#KKK
-                 #BEHL**                                       '*|$|IKKKKKb
-                .KKEHLLL*                             .,ppppp+p,`*||$IKKKK
-                 KKEEHLL*          .,,.           ,p###KKKKKKKKK#p||IIKKKKM
-                 EKKbPLL   ;L@#KKKKKKh#bn        ||KEPPEE$H||||||EKp$|IKKKM
-                 #KKbEH*,}#KKBPP5PPPEPEPHL      ;|EEE$E#WW*tmm@|$EPPP|IEKKL
-                 1KKbPL|$PEHL**`,L$@EEEEEE      |EEKKEEKWKKKK#p@WEE$EHL#KK
-                  KKbHLIEE$$@mE###KKKKbE$P      'PKEKKKmwKKKKWKKKbEE$HLIKK
-                  #KbL||$|$K#KBKKKKbmWPEP*      :L`5PPPP@@LLLL|$PPPPHLL|IK
-                  `KK*||||KKKKKPP*L|@H**`       '*`  ````*************L||b,|;p
-                   KK**|L$P5$H||t**```           `                   '|L|K@|#Pb
-                   !E* `***`'```                  *L                 ;||$$bPEEP
-                  :,Ec*                            `|*              :|||$#KEPP$
-                !bp*$H*                  .     .;|||cL            '*L|||0EKE@L|
-                 E|$IbLL'              .|#wp;+||$#KKP@             *LL|IKKKE@*|
-                 IHLIB@LL*             '|$IKE@P0P5$#KE           '||||$KKKKKH,|
-                 !L|IKEHL*`             ||EmH@LLIKKKEE@         .|$$I$EKKKKc*|`
-                  `||$EE@LL*           .|$KEKKEEPKEKBbE+;,   , ,||E@PEKKKKKHLP
-                  | *TEEE@LL*       .,||IE$KKKKKKKPP$$$I@pph$nLLL$@E$bK#KKKP`
-                   ! |$hE$@|LL+  .,||@E@hP@$pppappEEKpppEEEEKE|||EEbKKKKKKM
-                    'LIKKKbEE@LL*|I$KPEp#K##KW##KKKKKKKKKE|PEEP$$KKBKKKKKKM
-                      !EKKKKEE@L|Eh$EPKKPEHL***L*LL|$PPE$|E$$0EIKKBKKKKKKKb
-                       KbKKKDKEEP$KPPHLLLLLL+||||@L@|P$|||E@EE$EPKKKKK#KKK~
-                       `KEKKKKKPKKKE@@$|||@$E$K#bKEE@E@$|KEEK#hKKKBKKBBKKM
-                        TKKKKBKKKKKEEE$|@|$KEE#KKEEKNE@E@KI#KKKKKKDKKKKKK*
-                         K##KKKKKBKKKbE@Pb$$E@PKKNK##0bEBKB#KKKKKKKKKKKKK
-                         K#KK#KKKKBBNKKBKIKP#Q#KKE#EKIKKNBKKKKKBKBKKKKKKB
-                         #KKKBKKBKBKRKKK#KK&#DKKKK#KKBBKKK#BKKKBKKBBBKKKB
-                         `#KKKK#KBKKKKKBKKKBBKKBKKBKBDBKBKKKKKK#KKKKKKBKKb
-                          TKKKKK#KK#KKKKKKKKKK#KK#KKBKKKKKKKKKBKKKBKKBKKKK
-                           $KBKBKKBKKKKBKKKKKKKBBKKKBKBK#KKKKKKKBKKKKKKKKKb
-                            BKKKKKKK#KKK#KK#BKKKKKKKKKKKBKKKKKBBBKBKKKKKEEP
-                            *KKKKKKKKBBBKKKKKKKKKK#KKKKKKKKKKBKBKKKKKKKEEEEb
-                             `"KKKKKKKKBBKKKBKKKKKKKBBKKKBKKKKKKKKKKKPEEEEE$|bp+,
-                               TPKBKKKBKKKKBBKKKBKKBKBKBBKKKKKKKKPPEE|P|$$$EE$$5Pb
-                               !|EEPPEKKKKKKKKKKKKKKKKKKKKKKKPE$$$$$$$$$|$$$$5LLP
+ .d8888b.  .d8888b. 8888888888 
+d88P  Y88bd88P  Y88b      d88P 
+888    888888    888     d88P  
+888    888888    888    d88P   
+888    888888    888 88888888  
+888    888888    888  d88P     
+Y88b  d88PY88b  d88P d88P      
+ "Y8888P"  "Y8888P" d88P  
