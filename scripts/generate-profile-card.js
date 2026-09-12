@@ -150,6 +150,7 @@ function esc(s) {
 const BULLET = '. ';
 const MIN_DOTS = 3; // every leader shows at least this many dots, even on the longest line
 const EDGE_PADDING = 2; // a couple of spare columns beyond the longest line, so nothing looks cramped
+const TOWER_SEP = ' | '; // the vertical "tower" divider between paired stats
 
 // A "label: value" row. `targetWidth` is the total character width every row
 // (and every divider) is being stretched or shrunk to hit — that's what makes
@@ -163,6 +164,50 @@ function field(label, value, targetWidth, labelColor, valueColor, dotColor) {
   const dotCount = Math.max(MIN_DOTS, targetWidth - prefix.length - suffix.length);
   const dots = '.'.repeat(dotCount);
   return `<tspan fill="${labelColor}">${esc(BULLET)}${esc(label)}: </tspan><tspan fill="${dotColor}">${dots}</tspan><tspan fill="${valueColor}"> ${esc(value)}</tspan>`;
+}
+
+// A "raw" row: like `field()`, but the value portion is a pre-built string of
+// colored tspans instead of a single plain value (e.g. the LOC row, which
+// mixes label color with green/red ++/-- counts). `valuePlainLen` is the
+// *unstyled* character length of that value, used purely for dot math.
+function rawField(label, valueMarkup, valuePlainLen, targetWidth, labelColor, dotColor) {
+  const prefix = `${BULLET}${label}: `;
+  const suffixLen = valuePlainLen + 1; // leading space + value
+  const dotCount = Math.max(MIN_DOTS, targetWidth - prefix.length - suffixLen);
+  const dots = '.'.repeat(dotCount);
+  return `<tspan fill="${labelColor}">${esc(BULLET)}${esc(label)}: </tspan><tspan fill="${dotColor}">${dots}</tspan>${valueMarkup}`;
+}
+
+// A paired "label: value | label: value" row, used for the two GitHub Stats
+// lines that each pack two stats side by side. `leftColWidth` is the shared
+// column width both paired rows are stretched to on their *left* half — that's
+// what keeps the "|" towers vertically aligned between the two lines even as
+// the values (repo count, commit count, etc.) change length. `targetWidth` is
+// the usual shared right edge for the row as a whole, which the right half
+// fills out to with its own dot leader.
+function dualField(leftLabel, leftValue, rightLabel, rightValue, leftColWidth, targetWidth, labelColor, valueColor, dotColor) {
+  const leftPrefix = `${BULLET}${leftLabel}: `;
+  const leftSuffixLen = String(leftValue).length + 1;
+  const leftDotCount = Math.max(MIN_DOTS, leftColWidth - leftPrefix.length - leftSuffixLen);
+  const leftDots = '.'.repeat(leftDotCount);
+
+  const rightPrefix = `${rightLabel}: `;
+  const rightSuffixLen = String(rightValue).length + 1;
+  const rightDotCount = Math.max(
+    MIN_DOTS,
+    targetWidth - leftColWidth - TOWER_SEP.length - rightPrefix.length - rightSuffixLen
+  );
+  const rightDots = '.'.repeat(rightDotCount);
+
+  return (
+    `<tspan fill="${labelColor}">${esc(BULLET)}${esc(leftLabel)}: </tspan>` +
+    `<tspan fill="${dotColor}">${leftDots}</tspan>` +
+    `<tspan fill="${valueColor}"> ${esc(leftValue)}</tspan>` +
+    `<tspan fill="${labelColor}">${esc(TOWER_SEP)}</tspan>` +
+    `<tspan fill="${labelColor}">${esc(rightLabel)}: </tspan>` +
+    `<tspan fill="${dotColor}">${rightDots}</tspan>` +
+    `<tspan fill="${valueColor}"> ${esc(rightValue)}</tspan>`
+  );
 }
 
 // Section divider: "- Title ----------...----------" filling to targetWidth,
@@ -213,20 +258,37 @@ function buildSVG(stats) {
     { l: 'Discord', v: CONTACT.discord },
   ];
 
-  // The GitHub Stats block has two labelled values per physical line, so it
-  // can't use the same single dot-run formula as `field()` — but its total
-  // plain-text length still needs to count toward the shared target width so
-  // it doesn't overshoot the dividers.
-  const rawPlainLens = [
-    `${BULLET}Repos: ${stats.repoCount} {Contributed: ${stats.contributedCount}} | Stars: ${stats.starCount}`.length,
-    `${BULLET}Commits: ${stats.commitCount.toLocaleString()} | Followers: ${stats.followerCount}`.length,
-    `${BULLET}Lines of Code on GitHub: ${(stats.loc.additions - stats.loc.deletions).toLocaleString()} ( ${stats.loc.additions.toLocaleString()}++, ${stats.loc.deletions.toLocaleString()}-- )`.length,
+  // ── GitHub Stats values ──────────────────────────────────────────────────
+  const repoValue = `${stats.repoCount} {Contributed: ${stats.contributedCount}}`;
+  const starValue = `${stats.starCount}`;
+  const commitValue = `${stats.commitCount.toLocaleString()}`;
+  const followerValue = `${stats.followerCount}`;
+  const locNet = (stats.loc.additions - stats.loc.deletions).toLocaleString();
+  const locAdd = stats.loc.additions.toLocaleString();
+  const locDel = stats.loc.deletions.toLocaleString();
+  const locValuePlain = `${locNet} ( ${locAdd}++, ${locDel}-- )`;
+
+  // Shared left-column width for the two paired stats rows — this is what
+  // keeps the "|" towers stacked directly on top of each other regardless of
+  // how long the repo/commit numbers get.
+  const leftColWidth = Math.max(
+    `${BULLET}Repos: `.length + MIN_DOTS + repoValue.length + 1,
+    `${BULLET}Commits: `.length + MIN_DOTS + commitValue.length + 1
+  );
+
+  // Minimum full-row lengths (at MIN_DOTS) for every stats line, so the
+  // overall targetWidth calculation below still guarantees every row —
+  // paired or single — gets at least MIN_DOTS dots.
+  const statsRowMinLens = [
+    leftColWidth + TOWER_SEP.length + `Stars: `.length + MIN_DOTS + starValue.length + 1,
+    leftColWidth + TOWER_SEP.length + `Followers: `.length + MIN_DOTS + followerValue.length + 1,
+    `${BULLET}Lines of Code on GitHub: `.length + MIN_DOTS + locValuePlain.length + 1,
   ];
 
   const targetWidth =
     Math.max(
       ...rows.map((r) => BULLET.length + r.l.length + 2 + MIN_DOTS + 1 + r.v.length),
-      ...rawPlainLens,
+      ...statsRowMinLens,
       HEADER.length + 6,
       'GitHub Stats'.length + 6,
       'Contact'.length + 6
@@ -255,15 +317,22 @@ function buildSVG(stats) {
     { type: 'section', title: 'GitHub Stats' },
     {
       type: 'raw',
-      text: `<tspan fill="${labelColor}">${esc(BULLET)}Repos: </tspan><tspan fill="${dotColor}">${'.'.repeat(4)}</tspan><tspan fill="${val}"> ${stats.repoCount} {Contributed: ${stats.contributedCount}}</tspan><tspan fill="${labelColor}"> | Stars: </tspan><tspan fill="${dotColor}">${'.'.repeat(9)}</tspan><tspan fill="${val}"> ${stats.starCount}</tspan>`,
+      text: dualField('Repos', repoValue, 'Stars', starValue, leftColWidth, targetWidth, labelColor, val, dotColor),
     },
     {
       type: 'raw',
-      text: `<tspan fill="${labelColor}">${esc(BULLET)}Commits: </tspan><tspan fill="${dotColor}">${'.'.repeat(18)}</tspan><tspan fill="${val}"> ${stats.commitCount.toLocaleString()}</tspan><tspan fill="${labelColor}"> | Followers: </tspan><tspan fill="${dotColor}">${'.'.repeat(6)}</tspan><tspan fill="${val}"> ${stats.followerCount}</tspan>`,
+      text: dualField('Commits', commitValue, 'Followers', followerValue, leftColWidth, targetWidth, labelColor, val, dotColor),
     },
     {
       type: 'raw',
-      text: `<tspan fill="${labelColor}">${esc(BULLET)}Lines of Code on GitHub: </tspan><tspan fill="${dotColor}">.</tspan><tspan fill="${labelColor}"> ${(stats.loc.additions - stats.loc.deletions).toLocaleString()} (</tspan><tspan fill="${green}"> ${stats.loc.additions.toLocaleString()}++,</tspan><tspan fill="${red}"> ${stats.loc.deletions.toLocaleString()}--</tspan><tspan fill="${labelColor}"> )</tspan>`,
+      text: rawField(
+        'Lines of Code on GitHub',
+        `<tspan fill="${labelColor}"> ${locNet} (</tspan><tspan fill="${green}"> ${locAdd}++,</tspan><tspan fill="${red}"> ${locDel}--</tspan><tspan fill="${labelColor}"> )</tspan>`,
+        locValuePlain.length,
+        targetWidth,
+        labelColor,
+        dotColor
+      ),
     },
   ];
 
