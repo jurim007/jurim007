@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="34">
+  <text x="0" y="22" font-family="'Segoe UI Emoji', 'Noto Color Emoji', monospace" font-size="16">🔀</text>
+  <text x="26" y="22" font-family="monospace" font-size="15" font-weight="bold" fill="#e0a458">0</text>
+  <text x="26" y="22" dx="17" font-family="monospace" font-size="12" fill="#c9d1d9">Pull Requests</text>
+</svg>
