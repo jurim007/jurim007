@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="233" height="102">
+  <text x="0" y="22" font-family="'Segoe UI Emoji','Noto Color Emoji',monospace" font-size="16">📅</text>
+  <text x="30" y="22" font-family="monospace" font-size="15" font-weight="bold" fill="#e0a458">2022</text>
+  <text x="77.2" y="22" font-family="monospace" font-size="12" fill="#c9d1d9">Member Since</text>
+  <text x="0" y="56" font-family="'Segoe UI Emoji','Noto Color Emoji',monospace" font-size="16">🏷️</text>
+  <text x="30" y="56" font-family="monospace" font-size="15" font-weight="bold" fill="#e0a458">JavaScript</text>
+  <text x="133" y="56" font-family="monospace" font-size="12" fill="#c9d1d9">Top Language</text>
+  <text x="0" y="90" font-family="'Segoe UI Emoji','Noto Color Emoji',monospace" font-size="16">🍴</text>
+  <text x="30" y="90" font-family="monospace" font-size="15" font-weight="bold" fill="#e0a458">0</text>
+  <text x="49.3" y="90" font-family="monospace" font-size="12" fill="#c9d1d9">Forks</text>
+</svg>
