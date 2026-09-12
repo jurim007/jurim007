@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="500">
+  <rect width="100%" height="100%" rx="10" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <text x="20" y="30" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">                ....                          </text>
+<text x="20" y="45" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">             .-=++=++=--::.                   </text>
+<text x="20" y="60" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">           .:+**######*****+=:                </text>
+<text x="20" y="75" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">          :+*###%%%%@%%%%%##%#+-              </text>
+<text x="20" y="90" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">         :*##*+**####*++++**#%%#:             </text>
+<text x="20" y="105" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">        -##+-----==--------=++*#*.            </text>
+<text x="20" y="120" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">        +*--::::::::::::::---==**-            </text>
+<text x="20" y="135" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">       :*=---::::.....::::::--==##:           </text>
+<text x="20" y="150" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">       :*==-::::--:::::-=++=====*#-           </text>
+<text x="20" y="165" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">       :*+=-==++++=-::-+++===++=+#:           </text>
+<text x="20" y="180" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">        ++====+++++-::=++++*+++==*.           </text>
+<text x="20" y="195" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">        -+-=++++===-.:-----====-=+::          </text>
+<text x="20" y="210" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">        .=------::-:..---::::::-=+++:         </text>
+<text x="20" y="225" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">       :-=--::::::--::-=--::::--=++=:         </text>
+<text x="20" y="240" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">       :++=--:::::=+==++=::::--==*+=:         </text>
+<text x="20" y="255" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">        -++=--::::=++++++-----=++*+-.         </text>
+<text x="20" y="270" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">        .-++=----==++++++++===++**-.          </text>
+<text x="20" y="285" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">         .=++===++++===+++++=+****:           </text>
+<text x="20" y="300" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">          .++++++====++===+++*****.           </text>
+<text x="20" y="315" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">           =*****+==+++++++**#*##=            </text>
+<text x="20" y="330" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">           -#*****+*********###%%=            </text>
+<text x="20" y="345" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">           .*#*#***####**#%%###%%*.           </text>
+<text x="20" y="360" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">            :#%%#########%%%%%%%#+-           </text>
+<text x="20" y="375" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">             -*#%%%%%%%%%%%%%%#*++=--.        </text>
+<text x="20" y="390" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">              -+**####%####*++=======. .      </text>
+<text x="20" y="405" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">             .-====================-. .       </text>
+<text x="20" y="420" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">             ..==================-:           </text>
+<text x="20" y="435" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">             ...-=========-====-:.            </text>
+<text x="20" y="450" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">              .. .:---====---:.               </text>
+<text x="20" y="465" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">               ..   ..::::..                  </text>
+  <text x="480" y="30" font-family="monospace" font-size="12"><tspan fill="#e3b341" font-weight="bold">juri@malaj</tspan><tspan fill="#30363d"> ----------------------------------------------</tspan></text>
+<text x="480" y="45" font-family="monospace" font-size="12"><tspan fill="#c9d1d9" font-weight="bold">- OS </tspan><tspan fill="#30363d">----------------------------------------------------</tspan></text>
+<text x="480" y="60" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">OS: </tspan><tspan fill="#30363d">..............................</tspan><tspan fill="#e3b341"> Linux Ubuntu, Android 13</tspan></text>
+<text x="480" y="75" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Uptime: </tspan><tspan fill="#30363d">..........................</tspan><tspan fill="#e3b341"> 22 years, 3 months, 22 days</tspan></text>
+<text x="480" y="90" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Host: </tspan><tspan fill="#30363d">............................</tspan><tspan fill="#e3b341"> Holberton School</tspan></text>
+<text x="480" y="105" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Kernel: </tspan><tspan fill="#30363d">..........................</tspan><tspan fill="#e3b341"> Student</tspan></text>
+<text x="480" y="120" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">IDE: </tspan><tspan fill="#30363d">.............................</tspan><tspan fill="#e3b341"> VS Code</tspan></text>
+<text x="480" y="150" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Languages.Programming: </tspan><tspan fill="#30363d">...........</tspan><tspan fill="#e3b341"> JavaScript, TypeScript</tspan></text>
+<text x="480" y="165" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Languages.Computer: </tspan><tspan fill="#30363d">..............</tspan><tspan fill="#e3b341"> HTML, CSS, JSON, YAML</tspan></text>
+<text x="480" y="180" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Languages.Real: </tspan><tspan fill="#30363d">..................</tspan><tspan fill="#e3b341"> English, Albanian</tspan></text>
+<text x="480" y="210" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Hobbies.Competitive: </tspan><tspan fill="#30363d">.............</tspan><tspan fill="#e3b341"> Competitive CS2</tspan></text>
+<text x="480" y="225" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Hobbies.Creative: </tspan><tspan fill="#30363d">................</tspan><tspan fill="#e3b341"> Minecraft (Server Hosting + Builds)</tspan></text>
+<text x="480" y="255" font-family="monospace" font-size="12"><tspan fill="#c9d1d9" font-weight="bold">- Contact </tspan><tspan fill="#30363d">-----------------------------------------------</tspan></text>
+<text x="480" y="270" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Email: </tspan><tspan fill="#30363d">...........................</tspan><tspan fill="#e3b341"> juri.malaj@gmail.com</tspan></text>
+<text x="480" y="285" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">LinkedIn: </tspan><tspan fill="#30363d">........................</tspan><tspan fill="#e3b341"> juri-malaj</tspan></text>
+<text x="480" y="300" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Discord: </tspan><tspan fill="#30363d">.........................</tspan><tspan fill="#e3b341"> jurim007</tspan></text>
+<text x="480" y="330" font-family="monospace" font-size="12"><tspan fill="#c9d1d9" font-weight="bold">- GitHub Stats </tspan><tspan fill="#30363d">------------------------------------------</tspan></text>
+<text x="480" y="345" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Repos: </tspan><tspan fill="#30363d">....</tspan><tspan fill="#e3b341"> 11 </tspan><tspan fill="#e3b341">{Contributed: 3}</tspan><tspan fill="#c9d1d9"> | Stars: </tspan><tspan fill="#30363d">.........</tspan><tspan fill="#e3b341"> 0</tspan></text>
+<text x="480" y="360" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Commits: </tspan><tspan fill="#30363d">..................</tspan><tspan fill="#e3b341"> 330</tspan><tspan fill="#c9d1d9"> | Followers: </tspan><tspan fill="#30363d">......</tspan><tspan fill="#e3b341"> 0</tspan></text>
+<text x="480" y="375" font-family="monospace" font-size="12"><tspan fill="#c9d1d9">Lines of Code on GitHub: </tspan><tspan fill="#30363d">.</tspan><tspan fill="#c9d1d9"> 103 (</tspan><tspan fill="#3fb950"> 116++,</tspan><tspan fill="#f85149"> 13--</tspan><tspan fill="#c9d1d9"> )</tspan></text>
+
+</svg>
