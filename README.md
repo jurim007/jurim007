@@ -9,11 +9,19 @@
 </p>
 
 <h3 align="center">Total Contributions</h3>
-<p align="center">
-  <img src="generated/side-stats-left.svg" valign="middle" />
-  <img src="generated/contributions.svg" valign="middle" />
-  <img src="generated/side-stats-right.svg" valign="middle" />
-</p>
+<table align="center" width="90%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="left" valign="middle" width="33%">
+      <img src="generated/side-stats-left.svg" />
+    </td>
+    <td align="center" valign="middle" width="34%">
+      <img src="generated/contributions.svg" />
+    </td>
+    <td align="right" valign="middle" width="33%">
+      <img src="generated/side-stats-right.svg" />
+    </td>
+  </tr>
+</table>
 
 ---
 
