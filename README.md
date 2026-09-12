@@ -1,7 +1,7 @@
 [![Header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=180&section=header&fontColor=ffffff)](https://github.com/jurim007)
 
 <p align="center">
-  <img src="profile-card.svg" />
+  <img src="profile-card.svg" width="100%" />
 </p>
 
 <p align="center">
