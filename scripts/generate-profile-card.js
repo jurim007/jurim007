@@ -387,7 +387,10 @@ if (require.main === module) {
       loc,
     };
 
-    fs.writeFileSync('profile-card.svg', buildSVG(stats));
+    const outDir = 'generated';
+    const outPath = `${outDir}/profile-card.svg`;
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(outPath, buildSVG(stats));
   })();
 }
 
