@@ -147,35 +147,37 @@ function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// Builds a dot-leader field. `col` is the character column (from the
-// start of the label) where the value should begin — pass the same
-// `col` to every field in a visual group so their values line up,
-// and a different `col` per group so each section can use its own
-// alignment width (matches the reference instead of one global width).
-function field(label, value, col, labelColor, valueColor, dotColor) {
-  const plain = `${label}: `;
-  const dotCount = Math.max(1, col - plain.length);
+const BULLET = '. ';
+const MIN_DOTS = 3; // every leader shows at least this many dots, even on the longest line
+const EDGE_PADDING = 2; // a couple of spare columns beyond the longest line, so nothing looks cramped
+
+// A "label: value" row. `targetWidth` is the total character width every row
+// (and every divider) is being stretched or shrunk to hit — that's what makes
+// them all end at the same right edge instead of all starting at the same
+// left edge. Dots are whatever's left after the bullet, label and value are
+// accounted for, so they recompute automatically if any label or value
+// changes length.
+function field(label, value, targetWidth, labelColor, valueColor, dotColor) {
+  const prefix = `${BULLET}${label}: `;
+  const suffix = ` ${value}`;
+  const dotCount = Math.max(MIN_DOTS, targetWidth - prefix.length - suffix.length);
   const dots = '.'.repeat(dotCount);
-  return `<tspan fill="${labelColor}">${esc(label)}: </tspan><tspan fill="${dotColor}">${dots}</tspan><tspan fill="${valueColor}"> ${esc(value)}</tspan>`;
+  return `<tspan fill="${labelColor}">${esc(BULLET)}${esc(label)}: </tspan><tspan fill="${dotColor}">${dots}</tspan><tspan fill="${valueColor}"> ${esc(value)}</tspan>`;
 }
 
-function groupColumn(labels, padding = 3) {
-  const maxLen = Math.max(...labels.map((l) => l.length + 2)); // +2 for ": "
-  return maxLen + padding;
-}
-
-// Section divider: "- Title ----------...----------" filling to charWidth
-function sectionDivider(title, charWidth) {
+// Section divider: "- Title ----------...----------" filling to targetWidth,
+// drawn with a heavier line + bold weight so it reads as a thicker rule.
+function sectionDivider(title, targetWidth, dashColor) {
   const text = ` ${title} `;
-  const dashCount = Math.max(4, charWidth - text.length - 1);
-  return `<tspan fill="#e0a458" font-weight="bold">-${text}</tspan><tspan fill="#4b5263">${'-'.repeat(dashCount)}</tspan>`;
+  const dashCount = Math.max(4, targetWidth - text.length - 1);
+  return `<tspan fill="#e0a458" font-weight="bold">-${text}</tspan><tspan fill="${dashColor}" font-weight="bold">${'\u2501'.repeat(dashCount)}</tspan>`;
 }
 
-// Header divider: "juri@malaj ----------...----------" filling to charWidth (no leading dash)
-function headerDivider(name, charWidth) {
+// Header divider: "juri@malaj ----------...----------" filling to targetWidth (no leading dash)
+function headerDivider(name, targetWidth, dashColor) {
   const text = `${name} `;
-  const dashCount = Math.max(4, charWidth - text.length);
-  return `<tspan fill="#e0a458" font-weight="bold">${text}</tspan><tspan fill="#4b5263">${'-'.repeat(dashCount)}</tspan>`;
+  const dashCount = Math.max(4, targetWidth - text.length);
+  return `<tspan fill="#e0a458" font-weight="bold">${text}</tspan><tspan fill="${dashColor}" font-weight="bold">${'\u2501'.repeat(dashCount)}</tspan>`;
 }
 
 function buildSVG(stats) {
@@ -183,6 +185,7 @@ function buildSVG(stats) {
   const artColor = '#8b949e';
   const labelColor = '#c9d1d9';
   const dotColor = '#4b5263';
+  const dashColor = '#6e7681'; // brighter than dotColor so section/header rules look heavier
   const val = '#e0a458';
   const green = '#3fb950';
   const red = '#f85149';
@@ -193,51 +196,74 @@ function buildSVG(stats) {
   const fontSize = 12;
   const charW = fontSize * 0.6;
 
-  const rightColCharWidth = 62; // characters available in the right column, incl. dashes reaching the edge
+  // Every "label: value" row that needs to line-wrap to the shared right edge.
+  const rows = [
+    { l: 'OS', v: OS_LINE },
+    { l: 'Uptime', v: ageBreakdown(BIRTHDATE) },
+    { l: 'Host', v: HOST_LINE },
+    { l: 'Kernel', v: KERNEL_LINE },
+    { l: 'IDE', v: IDE_LINE },
+    { l: 'Languages.Programming', v: LANG_PROGRAMMING },
+    { l: 'Languages.Computer', v: LANG_COMPUTER },
+    { l: 'Languages.Real', v: LANG_REAL },
+    { l: 'Hobbies.Competitive', v: HOBBY_COMPETITIVE },
+    { l: 'Hobbies.Creative', v: HOBBY_CREATIVE },
+    { l: 'Email', v: CONTACT.email },
+    { l: 'LinkedIn', v: CONTACT.linkedin },
+    { l: 'Discord', v: CONTACT.discord },
+  ];
 
-  const group1Labels = ['OS', 'Uptime', 'Host', 'Kernel', 'IDE'];
-  const group2Labels = ['Languages.Programming', 'Languages.Computer', 'Languages.Real'];
-  const group3Labels = ['Hobbies.Competitive', 'Hobbies.Creative'];
-  const group4Labels = ['Email', 'LinkedIn', 'Discord'];
+  // The GitHub Stats block has two labelled values per physical line, so it
+  // can't use the same single dot-run formula as `field()` — but its total
+  // plain-text length still needs to count toward the shared target width so
+  // it doesn't overshoot the dividers.
+  const rawPlainLens = [
+    `${BULLET}Repos: ${stats.repoCount} {Contributed: ${stats.contributedCount}} | Stars: ${stats.starCount}`.length,
+    `${BULLET}Commits: ${stats.commitCount.toLocaleString()} | Followers: ${stats.followerCount}`.length,
+    `${BULLET}Lines of Code on GitHub: ${(stats.loc.additions - stats.loc.deletions).toLocaleString()} ( ${stats.loc.additions.toLocaleString()}++, ${stats.loc.deletions.toLocaleString()}-- )`.length,
+  ];
 
-  const col1 = groupColumn(group1Labels);
-  const col2 = groupColumn(group2Labels);
-  const col3 = groupColumn(group3Labels);
-  const col4 = groupColumn(group4Labels);
+  const targetWidth =
+    Math.max(
+      ...rows.map((r) => BULLET.length + r.l.length + 2 + MIN_DOTS + 1 + r.v.length),
+      ...rawPlainLens,
+      HEADER.length + 6,
+      'GitHub Stats'.length + 6,
+      'Contact'.length + 6
+    ) + EDGE_PADDING;
 
   const rightLines = [
     { type: 'header' },
-    { type: 'section', title: 'OS' },
-    { type: 'field', l: 'OS', v: OS_LINE, col: col1 },
-    { type: 'field', l: 'Uptime', v: ageBreakdown(BIRTHDATE), col: col1 },
-    { type: 'field', l: 'Host', v: HOST_LINE, col: col1 },
-    { type: 'field', l: 'Kernel', v: KERNEL_LINE, col: col1 },
-    { type: 'field', l: 'IDE', v: IDE_LINE, col: col1 },
+    { type: 'field', l: 'OS', v: OS_LINE },
+    { type: 'field', l: 'Uptime', v: ageBreakdown(BIRTHDATE) },
+    { type: 'field', l: 'Host', v: HOST_LINE },
+    { type: 'field', l: 'Kernel', v: KERNEL_LINE },
+    { type: 'field', l: 'IDE', v: IDE_LINE },
     { type: 'blank' },
-    { type: 'field', l: 'Languages.Programming', v: LANG_PROGRAMMING, col: col2 },
-    { type: 'field', l: 'Languages.Computer', v: LANG_COMPUTER, col: col2 },
-    { type: 'field', l: 'Languages.Real', v: LANG_REAL, col: col2 },
+    { type: 'field', l: 'Languages.Programming', v: LANG_PROGRAMMING },
+    { type: 'field', l: 'Languages.Computer', v: LANG_COMPUTER },
+    { type: 'field', l: 'Languages.Real', v: LANG_REAL },
     { type: 'blank' },
-    { type: 'field', l: 'Hobbies.Competitive', v: HOBBY_COMPETITIVE, col: col3 },
-    { type: 'field', l: 'Hobbies.Creative', v: HOBBY_CREATIVE, col: col3 },
+    { type: 'field', l: 'Hobbies.Competitive', v: HOBBY_COMPETITIVE },
+    { type: 'field', l: 'Hobbies.Creative', v: HOBBY_CREATIVE },
     { type: 'blank' },
     { type: 'section', title: 'Contact' },
-    { type: 'field', l: 'Email', v: CONTACT.email, col: col4 },
-    { type: 'field', l: 'LinkedIn', v: CONTACT.linkedin, col: col4 },
-    { type: 'field', l: 'Discord', v: CONTACT.discord, col: col4 },
+    { type: 'field', l: 'Email', v: CONTACT.email },
+    { type: 'field', l: 'LinkedIn', v: CONTACT.linkedin },
+    { type: 'field', l: 'Discord', v: CONTACT.discord },
     { type: 'blank' },
     { type: 'section', title: 'GitHub Stats' },
     {
       type: 'raw',
-      text: `<tspan fill="${labelColor}">Repos: </tspan><tspan fill="${dotColor}">${'.'.repeat(4)}</tspan><tspan fill="${val}"> ${stats.repoCount} {Contributed: ${stats.contributedCount}}</tspan><tspan fill="${labelColor}"> | Stars: </tspan><tspan fill="${dotColor}">${'.'.repeat(9)}</tspan><tspan fill="${val}"> ${stats.starCount}</tspan>`,
+      text: `<tspan fill="${labelColor}">${esc(BULLET)}Repos: </tspan><tspan fill="${dotColor}">${'.'.repeat(4)}</tspan><tspan fill="${val}"> ${stats.repoCount} {Contributed: ${stats.contributedCount}}</tspan><tspan fill="${labelColor}"> | Stars: </tspan><tspan fill="${dotColor}">${'.'.repeat(9)}</tspan><tspan fill="${val}"> ${stats.starCount}</tspan>`,
     },
     {
       type: 'raw',
-      text: `<tspan fill="${labelColor}">Commits: </tspan><tspan fill="${dotColor}">${'.'.repeat(18)}</tspan><tspan fill="${val}"> ${stats.commitCount.toLocaleString()}</tspan><tspan fill="${labelColor}"> | Followers: </tspan><tspan fill="${dotColor}">${'.'.repeat(6)}</tspan><tspan fill="${val}"> ${stats.followerCount}</tspan>`,
+      text: `<tspan fill="${labelColor}">${esc(BULLET)}Commits: </tspan><tspan fill="${dotColor}">${'.'.repeat(18)}</tspan><tspan fill="${val}"> ${stats.commitCount.toLocaleString()}</tspan><tspan fill="${labelColor}"> | Followers: </tspan><tspan fill="${dotColor}">${'.'.repeat(6)}</tspan><tspan fill="${val}"> ${stats.followerCount}</tspan>`,
     },
     {
       type: 'raw',
-      text: `<tspan fill="${labelColor}">Lines of Code on GitHub: </tspan><tspan fill="${dotColor}">.</tspan><tspan fill="${labelColor}"> ${(stats.loc.additions - stats.loc.deletions).toLocaleString()} (</tspan><tspan fill="${green}"> ${stats.loc.additions.toLocaleString()}++,</tspan><tspan fill="${red}"> ${stats.loc.deletions.toLocaleString()}--</tspan><tspan fill="${labelColor}"> )</tspan>`,
+      text: `<tspan fill="${labelColor}">${esc(BULLET)}Lines of Code on GitHub: </tspan><tspan fill="${dotColor}">.</tspan><tspan fill="${labelColor}"> ${(stats.loc.additions - stats.loc.deletions).toLocaleString()} (</tspan><tspan fill="${green}"> ${stats.loc.additions.toLocaleString()}++,</tspan><tspan fill="${red}"> ${stats.loc.deletions.toLocaleString()}--</tspan><tspan fill="${labelColor}"> )</tspan>`,
     },
   ];
 
@@ -245,7 +271,7 @@ function buildSVG(stats) {
   const rightColX = artColX + artMaxLen * charW + 40;
   const topPad = 30;
   const height = Math.max(artLines.length, rightLines.length) * lineHeight + topPad + 20;
-  const width = rightColX + rightColCharWidth * charW + 30;
+  const width = rightColX + targetWidth * charW + 30;
 
   const artSVG = artLines
     .map(
@@ -259,13 +285,13 @@ function buildSVG(stats) {
     const y = topPad + i * lineHeight;
     if (l.type === 'blank') return;
     if (l.type === 'header') {
-      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${headerDivider(HEADER, rightColCharWidth)}</text>\n`;
+      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${headerDivider(HEADER, targetWidth, dashColor)}</text>\n`;
     } else if (l.type === 'section') {
-      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${sectionDivider(l.title, rightColCharWidth)}</text>\n`;
+      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${sectionDivider(l.title, targetWidth, dashColor)}</text>\n`;
     } else if (l.type === 'raw') {
       rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${l.text}</text>\n`;
     } else if (l.type === 'field') {
-      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${field(l.l, l.v, l.col, labelColor, val, dotColor)}</text>\n`;
+      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${field(l.l, l.v, targetWidth, labelColor, val, dotColor)}</text>\n`;
     }
   });
 
@@ -276,20 +302,24 @@ function buildSVG(stats) {
 </svg>`;
 }
 
-(async () => {
-  const user = await getUserOverview();
-  const totalStars = user.repositories.nodes.reduce((sum, r) => sum + r.stargazerCount, 0);
-  const commitCount = await getTotalCommits(user.createdAt);
-  const loc = countLinesOfCode(user.repositories.nodes);
+if (require.main === module) {
+  (async () => {
+    const user = await getUserOverview();
+    const totalStars = user.repositories.nodes.reduce((sum, r) => sum + r.stargazerCount, 0);
+    const commitCount = await getTotalCommits(user.createdAt);
+    const loc = countLinesOfCode(user.repositories.nodes);
 
-  const stats = {
-    repoCount: user.repositories.totalCount,
-    contributedCount: user.repositoriesContributedTo.totalCount,
-    starCount: totalStars,
-    followerCount: user.followers.totalCount,
-    commitCount,
-    loc,
-  };
+    const stats = {
+      repoCount: user.repositories.totalCount,
+      contributedCount: user.repositoriesContributedTo.totalCount,
+      starCount: totalStars,
+      followerCount: user.followers.totalCount,
+      commitCount,
+      loc,
+    };
 
-  fs.writeFileSync('profile-card.svg', buildSVG(stats));
-})();
+    fs.writeFileSync('profile-card.svg', buildSVG(stats));
+  })();
+}
+
+module.exports = { buildSVG };
