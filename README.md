@@ -9,9 +9,23 @@
 </p>
 
 <h3 align="center">Total Contributions</h3>
-<p align="center">
+<table>
+<tr>
+<td align="right">
+  <img src="side-stat-streak.svg" /><br/>
+  <img src="side-stat-prs.svg" /><br/>
+  <img src="side-stat-issues.svg" />
+</td>
+<td align="center">
   <img src="contributions.svg" />
-</p>
+</td>
+<td align="left">
+  <img src="side-stat-member.svg" /><br/>
+  <img src="side-stat-lang.svg" /><br/>
+  <img src="side-stat-forks.svg" />
+</td>
+</tr>
+</table>
 
 ---
 
