@@ -27,7 +27,7 @@ const CONTACT = {
 };
 // ────────────────────────────────────────────────────────────────────────────
 
-const ASCII_ART_PATH = 'assets/ascii-art.txt';
+const ASCII_ART_PATH = 'assets/ascii-art.txt'; // commit your sourcebin art here
 const ASCII_ART = fs.existsSync(ASCII_ART_PATH)
   ? fs.readFileSync(ASCII_ART_PATH, 'utf-8').replace(/\n$/, '')
   : '(add assets/ascii-art.txt)';
@@ -53,7 +53,10 @@ function ageBreakdown(birthISO) {
 async function graphql(query, variables = {}) {
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
-    headers: { Authorization: `bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: `bearer ${TOKEN}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ query, variables }),
   });
   const json = await res.json();
@@ -105,6 +108,11 @@ async function getTotalCommits(createdAt) {
   return total;
 }
 
+// All-time LOC across full history of every owned repo.
+// No --author filter: these are your own repos, so nearly every
+// commit is yours anyway, and filtering by author was silently
+// dropping almost everything whenever your local git name/email
+// didn't literally match your GitHub username string.
 function countLinesOfCode(repos) {
   let additions = 0;
   let deletions = 0;
@@ -233,7 +241,6 @@ function buildSVG(stats) {
   const fontSize = 12;
   const charW = fontSize * 0.6;
 
-
   // Every "label: value" row that needs to line-wrap to the shared right edge.
   const rows = [
     { l: 'OS', v: OS_LINE },
@@ -287,7 +294,6 @@ function buildSVG(stats) {
       'Contact'.length + 6
     ) + EDGE_PADDING;
 
-
   const rightLines = [
     { type: 'header' },
     { type: 'field', l: 'OS', v: OS_LINE },
@@ -311,7 +317,8 @@ function buildSVG(stats) {
     { type: 'section', title: 'GitHub Stats' },
     {
       type: 'raw',
-      text: dualField('Repos', repoValue, 'Stars', starValue, leftColWidth, targetWidth, labelColor, val, dotColor),    },
+      text: dualField('Repos', repoValue, 'Stars', starValue, leftColWidth, targetWidth, labelColor, val, dotColor),
+    },
     {
       type: 'raw',
       text: dualField('Commits', commitValue, 'Followers', followerValue, leftColWidth, targetWidth, labelColor, val, dotColor),
@@ -334,7 +341,7 @@ function buildSVG(stats) {
   const topPad = 30;
   const height = Math.max(artLines.length, rightLines.length) * lineHeight + topPad + 20;
   const width = rightColX + targetWidth * charW + 30;
-  
+
   const artSVG = artLines
     .map(
       (l, i) =>
@@ -363,7 +370,6 @@ function buildSVG(stats) {
   ${rightSVG}
 </svg>`;
 }
-
 
 if (require.main === module) {
   (async () => {
