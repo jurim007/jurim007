@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="205">
+    <rect x="0.5" y="0.5" width="379" height="204" rx="10" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+    <text x="20" y="30" fill="#c9d1d9" font-family="'Segoe UI', monospace" font-size="16" font-weight="bold">GitHub Stats</text>
+    
+    <text x="20" y="65" fill="#c9d1d9" font-family="'Segoe UI', monospace" font-size="14">Repositories</text>
+    <text x="360" y="65" fill="#58a6ff" font-family="'Segoe UI', monospace" font-size="14" font-weight="bold" text-anchor="end">11</text>
+    <text x="20" y="95" fill="#c9d1d9" font-family="'Segoe UI', monospace" font-size="14">Total Stars</text>
+    <text x="360" y="95" fill="#58a6ff" font-family="'Segoe UI', monospace" font-size="14" font-weight="bold" text-anchor="end">0</text>
+    <text x="20" y="125" fill="#c9d1d9" font-family="'Segoe UI', monospace" font-size="14">Followers</text>
+    <text x="360" y="125" fill="#58a6ff" font-family="'Segoe UI', monospace" font-size="14" font-weight="bold" text-anchor="end">0</text>
+    <text x="20" y="155" fill="#c9d1d9" font-family="'Segoe UI', monospace" font-size="14">Total Commits</text>
+    <text x="360" y="155" fill="#58a6ff" font-family="'Segoe UI', monospace" font-size="14" font-weight="bold" text-anchor="end">328</text>
+    <text x="20" y="185" fill="#c9d1d9" font-family="'Segoe UI', monospace" font-size="14">Lines of Code</text>
+    <text x="360" y="185" fill="#58a6ff" font-family="'Segoe UI', monospace" font-size="14" font-weight="bold" text-anchor="end">86++ / 13--</text>
+  </svg>
