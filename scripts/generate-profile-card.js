@@ -27,37 +27,10 @@ const CONTACT = {
 };
 // ────────────────────────────────────────────────────────────────────────────
 
-// Static ASCII portrait (generated once from a photo — doesn't need regenerating)
-const ASCII_ART = `                ....                          
-             .-=++=++=--::.                   
-           .:+**######*****+=:                
-          :+*###%%%%@%%%%%##%#+-              
-         :*##*+**####*++++**#%%#:             
-        -##+-----==--------=++*#*.            
-        +*--::::::::::::::---==**-            
-       :*=---::::.....::::::--==##:           
-       :*==-::::--:::::-=++=====*#-           
-       :*+=-==++++=-::-+++===++=+#:           
-        ++====+++++-::=++++*+++==*.           
-        -+-=++++===-.:-----====-=+::          
-        .=------::-:..---::::::-=+++:         
-       :-=--::::::--::-=--::::--=++=:         
-       :++=--:::::=+==++=::::--==*+=:         
-        -++=--::::=++++++-----=++*+-.         
-        .-++=----==++++++++===++**-.          
-         .=++===++++===+++++=+****:           
-          .++++++====++===+++*****.           
-           =*****+==+++++++**#*##=            
-           -#*****+*********###%%=            
-           .*#*#***####**#%%###%%*.           
-            :#%%#########%%%%%%%#+-           
-             -*#%%%%%%%%%%%%%%#*++=--.        
-              -+**####%####*++=======. .      
-             .-====================-. .       
-             ..==================-:           
-             ...-=========-====-:.            
-              .. .:---====---:.               
-               ..   ..::::..                  `;
+const ASCII_ART_PATH = 'assets/ascii-art.txt'; // commit your sourcebin art here
+const ASCII_ART = fs.existsSync(ASCII_ART_PATH)
+  ? fs.readFileSync(ASCII_ART_PATH, 'utf-8').replace(/\n$/, '')
+  : '(add assets/ascii-art.txt)';
 
 function ageBreakdown(birthISO) {
   const birth = new Date(birthISO + 'T00:00:00Z');
@@ -135,6 +108,11 @@ async function getTotalCommits(createdAt) {
   return total;
 }
 
+// All-time LOC across full history of every owned repo.
+// No --author filter: these are your own repos, so nearly every
+// commit is yours anyway, and filtering by author was silently
+// dropping almost everything whenever your local git name/email
+// didn't literally match your GitHub username string.
 function countLinesOfCode(repos) {
   let additions = 0;
   let deletions = 0;
@@ -145,10 +123,10 @@ function countLinesOfCode(repos) {
         `git clone --quiet https://x-access-token:${TOKEN}@github.com/${USERNAME}/${repo.name}.git ${dir}`,
         { stdio: 'ignore' }
       );
-      const log = execSync(
-        `git -C ${dir} log --author="${USERNAME}" --pretty=tformat: --numstat`,
-        { encoding: 'utf-8', maxBuffer: 1024 * 1024 * 50 }
-      );
+      const log = execSync(`git -C ${dir} log --pretty=tformat: --numstat`, {
+        encoding: 'utf-8',
+        maxBuffer: 1024 * 1024 * 100,
+      });
       for (const line of log.split('\n')) {
         const parts = line.trim().split(/\s+/);
         if (parts.length === 3 && parts[0] !== '-' && parts[1] !== '-') {
@@ -169,74 +147,105 @@ function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// label ..... value   (dot leader padded to a fixed character width)
-function field(label, value, labelColor, valueColor, dotColor, width = 34) {
+// Builds a dot-leader field. `col` is the character column (from the
+// start of the label) where the value should begin — pass the same
+// `col` to every field in a visual group so their values line up,
+// and a different `col` per group so each section can use its own
+// alignment width (matches the reference instead of one global width).
+function field(label, value, col, labelColor, valueColor, dotColor) {
   const plain = `${label}: `;
-  const dotCount = Math.max(2, width - plain.length);
+  const dotCount = Math.max(1, col - plain.length);
   const dots = '.'.repeat(dotCount);
   return `<tspan fill="${labelColor}">${esc(label)}: </tspan><tspan fill="${dotColor}">${dots}</tspan><tspan fill="${valueColor}"> ${esc(value)}</tspan>`;
 }
 
-function sectionHeader(title, totalWidth = 56) {
-  const label = ` ${title} `;
-  const dashCount = Math.max(4, totalWidth - label.length);
-  return `<tspan fill="#c9d1d9" font-weight="bold">-${label}</tspan><tspan fill="#30363d">${'-'.repeat(dashCount)}</tspan>`;
+function groupColumn(labels, padding = 3) {
+  const maxLen = Math.max(...labels.map((l) => l.length + 2)); // +2 for ": "
+  return maxLen + padding;
+}
+
+// Section divider: "- Title ----------...----------" filling to charWidth
+function sectionDivider(title, charWidth) {
+  const text = ` ${title} `;
+  const dashCount = Math.max(4, charWidth - text.length - 1);
+  return `<tspan fill="#e0a458" font-weight="bold">-${text}</tspan><tspan fill="#4b5263">${'-'.repeat(dashCount)}</tspan>`;
+}
+
+// Header divider: "juri@malaj ----------...----------" filling to charWidth (no leading dash)
+function headerDivider(name, charWidth) {
+  const text = `${name} `;
+  const dashCount = Math.max(4, charWidth - text.length);
+  return `<tspan fill="#e0a458" font-weight="bold">${text}</tspan><tspan fill="#4b5263">${'-'.repeat(dashCount)}</tspan>`;
 }
 
 function buildSVG(stats) {
   const bg = '#0d1117';
   const artColor = '#8b949e';
-  const label = '#c9d1d9';
-  const dot = '#30363d';
-  const val = '#e3b341';
+  const labelColor = '#c9d1d9';
+  const dotColor = '#4b5263';
+  const val = '#e0a458';
   const green = '#3fb950';
   const red = '#f85149';
 
   const artLines = ASCII_ART.split('\n');
+  const artMaxLen = Math.max(...artLines.map((l) => l.length));
   const lineHeight = 15;
   const fontSize = 12;
+  const charW = fontSize * 0.6;
+
+  const rightColCharWidth = 62; // characters available in the right column, incl. dashes reaching the edge
+
+  const group1Labels = ['OS', 'Uptime', 'Host', 'Kernel', 'IDE'];
+  const group2Labels = ['Languages.Programming', 'Languages.Computer', 'Languages.Real'];
+  const group3Labels = ['Hobbies.Competitive', 'Hobbies.Creative'];
+  const group4Labels = ['Email', 'LinkedIn', 'Discord'];
+
+  const col1 = groupColumn(group1Labels);
+  const col2 = groupColumn(group2Labels);
+  const col3 = groupColumn(group3Labels);
+  const col4 = groupColumn(group4Labels);
 
   const rightLines = [
     { type: 'header' },
-    { type: 'section', text: sectionHeader('OS') },
-    { type: 'field', l: 'OS', v: OS_LINE },
-    { type: 'field', l: 'Uptime', v: ageBreakdown(BIRTHDATE) },
-    { type: 'field', l: 'Host', v: HOST_LINE },
-    { type: 'field', l: 'Kernel', v: KERNEL_LINE },
-    { type: 'field', l: 'IDE', v: IDE_LINE },
+    { type: 'section', title: 'OS' },
+    { type: 'field', l: 'OS', v: OS_LINE, col: col1 },
+    { type: 'field', l: 'Uptime', v: ageBreakdown(BIRTHDATE), col: col1 },
+    { type: 'field', l: 'Host', v: HOST_LINE, col: col1 },
+    { type: 'field', l: 'Kernel', v: KERNEL_LINE, col: col1 },
+    { type: 'field', l: 'IDE', v: IDE_LINE, col: col1 },
     { type: 'blank' },
-    { type: 'field', l: 'Languages.Programming', v: LANG_PROGRAMMING },
-    { type: 'field', l: 'Languages.Computer', v: LANG_COMPUTER },
-    { type: 'field', l: 'Languages.Real', v: LANG_REAL },
+    { type: 'field', l: 'Languages.Programming', v: LANG_PROGRAMMING, col: col2 },
+    { type: 'field', l: 'Languages.Computer', v: LANG_COMPUTER, col: col2 },
+    { type: 'field', l: 'Languages.Real', v: LANG_REAL, col: col2 },
     { type: 'blank' },
-    { type: 'field', l: 'Hobbies.Competitive', v: HOBBY_COMPETITIVE },
-    { type: 'field', l: 'Hobbies.Creative', v: HOBBY_CREATIVE },
+    { type: 'field', l: 'Hobbies.Competitive', v: HOBBY_COMPETITIVE, col: col3 },
+    { type: 'field', l: 'Hobbies.Creative', v: HOBBY_CREATIVE, col: col3 },
     { type: 'blank' },
-    { type: 'section', text: sectionHeader('Contact') },
-    { type: 'field', l: 'Email', v: CONTACT.email },
-    { type: 'field', l: 'LinkedIn', v: CONTACT.linkedin },
-    { type: 'field', l: 'Discord', v: CONTACT.discord },
+    { type: 'section', title: 'Contact' },
+    { type: 'field', l: 'Email', v: CONTACT.email, col: col4 },
+    { type: 'field', l: 'LinkedIn', v: CONTACT.linkedin, col: col4 },
+    { type: 'field', l: 'Discord', v: CONTACT.discord, col: col4 },
     { type: 'blank' },
-    { type: 'section', text: sectionHeader('GitHub Stats') },
+    { type: 'section', title: 'GitHub Stats' },
     {
       type: 'raw',
-      text: `<tspan fill="${label}">Repos: </tspan><tspan fill="${dot}">${'.'.repeat(4)}</tspan><tspan fill="${val}"> ${stats.repoCount} </tspan><tspan fill="${val}">{Contributed: ${stats.contributedCount}}</tspan><tspan fill="${label}"> | Stars: </tspan><tspan fill="${dot}">${'.'.repeat(9)}</tspan><tspan fill="${val}"> ${stats.starCount}</tspan>`,
+      text: `<tspan fill="${labelColor}">Repos: </tspan><tspan fill="${dotColor}">${'.'.repeat(4)}</tspan><tspan fill="${val}"> ${stats.repoCount} {Contributed: ${stats.contributedCount}}</tspan><tspan fill="${labelColor}"> | Stars: </tspan><tspan fill="${dotColor}">${'.'.repeat(9)}</tspan><tspan fill="${val}"> ${stats.starCount}</tspan>`,
     },
     {
       type: 'raw',
-      text: `<tspan fill="${label}">Commits: </tspan><tspan fill="${dot}">${'.'.repeat(18)}</tspan><tspan fill="${val}"> ${stats.commitCount.toLocaleString()}</tspan><tspan fill="${label}"> | Followers: </tspan><tspan fill="${dot}">${'.'.repeat(6)}</tspan><tspan fill="${val}"> ${stats.followerCount}</tspan>`,
+      text: `<tspan fill="${labelColor}">Commits: </tspan><tspan fill="${dotColor}">${'.'.repeat(18)}</tspan><tspan fill="${val}"> ${stats.commitCount.toLocaleString()}</tspan><tspan fill="${labelColor}"> | Followers: </tspan><tspan fill="${dotColor}">${'.'.repeat(6)}</tspan><tspan fill="${val}"> ${stats.followerCount}</tspan>`,
     },
     {
       type: 'raw',
-      text: `<tspan fill="${label}">Lines of Code on GitHub: </tspan><tspan fill="${dot}">.</tspan><tspan fill="${label}"> ${stats.loc.additions.toLocaleString() - stats.loc.deletions.toLocaleString() >= 0 ? '' : ''}${(stats.loc.additions - stats.loc.deletions).toLocaleString()} (</tspan><tspan fill="${green}"> ${stats.loc.additions.toLocaleString()}++,</tspan><tspan fill="${red}"> ${stats.loc.deletions.toLocaleString()}--</tspan><tspan fill="${label}"> )</tspan>`,
+      text: `<tspan fill="${labelColor}">Lines of Code on GitHub: </tspan><tspan fill="${dotColor}">.</tspan><tspan fill="${labelColor}"> ${(stats.loc.additions - stats.loc.deletions).toLocaleString()} (</tspan><tspan fill="${green}"> ${stats.loc.additions.toLocaleString()}++,</tspan><tspan fill="${red}"> ${stats.loc.deletions.toLocaleString()}--</tspan><tspan fill="${labelColor}"> )</tspan>`,
     },
   ];
 
-  const rightColX = 480;
   const artColX = 20;
+  const rightColX = artColX + artMaxLen * charW + 40;
   const topPad = 30;
   const height = Math.max(artLines.length, rightLines.length) * lineHeight + topPad + 20;
-  const width = 980;
+  const width = rightColX + rightColCharWidth * charW + 30;
 
   const artSVG = artLines
     .map(
@@ -250,11 +259,13 @@ function buildSVG(stats) {
     const y = topPad + i * lineHeight;
     if (l.type === 'blank') return;
     if (l.type === 'header') {
-      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}"><tspan fill="${val}" font-weight="bold">${esc(HEADER)}</tspan><tspan fill="${dot}"> ${'-'.repeat(46)}</tspan></text>\n`;
-    } else if (l.type === 'section' || l.type === 'raw') {
+      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${headerDivider(HEADER, rightColCharWidth)}</text>\n`;
+    } else if (l.type === 'section') {
+      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${sectionDivider(l.title, rightColCharWidth)}</text>\n`;
+    } else if (l.type === 'raw') {
       rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${l.text}</text>\n`;
     } else if (l.type === 'field') {
-      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${field(l.l, l.v, label, val, dot)}</text>\n`;
+      rightSVG += `<text x="${rightColX}" y="${y}" font-family="monospace" font-size="${fontSize}">${field(l.l, l.v, l.col, labelColor, val, dotColor)}</text>\n`;
     }
   });
 
