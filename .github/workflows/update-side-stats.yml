@@ -1,0 +1,29 @@
+name: Update Side Stats
+on:
+  schedule:
+    - cron: "0 0 * * *"   # daily
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate side stats
+        run: node scripts/generate-side-stats.js
+        env:
+          GH_USERNAME: jurim007
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+
+      - name: Commit and push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update side stats"
+          file_pattern: side-stat-*.svg
