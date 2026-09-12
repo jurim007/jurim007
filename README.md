@@ -1,6 +1,12 @@
 [![Header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=180&section=header&fontColor=ffffff)](https://github.com/jurim007)
 
----
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="stats-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="stats-light.svg">
+    <img alt="GitHub Stats" src="stats-light.svg" />
+  </picture>
+</p>
 
 <p align="center">
   <img src="assets/divider.gif" width="100%" />

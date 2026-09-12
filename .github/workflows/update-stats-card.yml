@@ -1,0 +1,29 @@
+name: Update GitHub Stats Card
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate stats card
+        run: node scripts/generate-stats.js
+        env:
+          GH_USERNAME: jurim007
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+
+      - name: Commit and push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update stats card"
+          file_pattern: stats-dark.svg stats-light.svg
