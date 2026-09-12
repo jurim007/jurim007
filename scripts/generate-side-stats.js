@@ -111,22 +111,42 @@ function esc(s) {
 // side: 'right' -> label, value, icon   (icon nearest the RIGHT edge — mirror of left)
 // edgeMargin adds baked-in blank space on the OUTER edge, so the pair
 // naturally spreads wider once centered as a row in the README.
-function stackedStats(rows, side, edgeMargin = 40) {
-  const rowHeight = 34;
-  const fontSize = 15;
-  const smallFontSize = fontSize * 0.8;
-  const charW = fontSize * 0.62;
-  const smallCharW = smallFontSize * 0.62;
-  const iconSize = 20;
-  const gap = 8;
+// Layout constants pulled out so naturalWidth() and stackedStats() can't drift apart.
+const ROW_HEIGHT = 34;
+const FONT_SIZE = 15;
+const SMALL_FONT_SIZE = FONT_SIZE * 0.8;
+const CHAR_W = FONT_SIZE * 0.62;
+const SMALL_CHAR_W = SMALL_FONT_SIZE * 0.62;
+const ICON_SIZE = 20;
+const GAP = 8;
 
+// The width this block of rows would naturally render at, based purely on
+// its own text — i.e. with no forced/shared width applied. Used to figure
+// out which of the left/right blocks is wider so the narrower one can be
+// padded out to match.
+function naturalWidth(rows, edgeMargin = 40) {
   const contentWidths = rows.map((r) => {
-    const valueW = String(r.value).length * charW;
-    const labelW = r.label.length * smallCharW;
-    return iconSize + gap + valueW + gap + labelW;
+    const valueW = String(r.value).length * CHAR_W;
+    const labelW = r.label.length * SMALL_CHAR_W;
+    return ICON_SIZE + GAP + valueW + GAP + labelW;
   });
-  const contentWidth = Math.ceil(Math.max(...contentWidths));
-  const width = contentWidth + edgeMargin;
+  return Math.ceil(Math.max(...contentWidths)) + edgeMargin;
+}
+
+// `width` is always passed in explicitly (see naturalWidth() above / the
+// shared width computed in the IIFE below) rather than derived here, so that
+// the left and right blocks can be rendered at an identical width — that's
+// what keeps them symmetric (and the centered image between them truly
+// centered) regardless of which side has longer labels/values.
+function stackedStats(rows, side, width, edgeMargin = 40) {
+  const rowHeight = ROW_HEIGHT;
+  const fontSize = FONT_SIZE;
+  const smallFontSize = SMALL_FONT_SIZE;
+  const charW = CHAR_W;
+  const smallCharW = SMALL_CHAR_W;
+  const iconSize = ICON_SIZE;
+  const gap = GAP;
+
   const height = rows.length * rowHeight;
 
   const rowsSVG = rows
@@ -189,6 +209,12 @@ function stackedStats(rows, side, edgeMargin = 40) {
     { key: 'forks', value: totalForks, label: 'Forks' },
   ];
 
-  fs.writeFileSync(path.join(OUT_DIR, 'side-stats-left.svg'), stackedStats(leftRows, 'left'));
-  fs.writeFileSync(path.join(OUT_DIR, 'side-stats-right.svg'), stackedStats(rightRows, 'right'));
+  // Whichever side needs more room dictates the shared width; the other
+  // side just gets padded out to match (blank space added away from its
+  // outer edge, so its icon/text stays flush against the true left/right
+  // edge of the whole row — see the side==='left' vs 'right' branches above).
+  const sharedWidth = Math.max(naturalWidth(leftRows), naturalWidth(rightRows));
+
+  fs.writeFileSync(path.join(OUT_DIR, 'side-stats-left.svg'), stackedStats(leftRows, 'left', sharedWidth));
+  fs.writeFileSync(path.join(OUT_DIR, 'side-stats-right.svg'), stackedStats(rightRows, 'right', sharedWidth));
 })();
