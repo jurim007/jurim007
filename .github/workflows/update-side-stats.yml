@@ -26,4 +26,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update side stats"
-          file_pattern: side-stat-*.svg
+          file_pattern: side-stats-left.svg side-stats-right.svg

@@ -88,14 +88,35 @@ function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// Minimal single-line stat: icon + value + label, transparent bg, no border.
-function miniStat(icon, value, label) {
-  const width = 170;
-  const height = 34;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-  <text x="0" y="22" font-family="'Segoe UI Emoji', 'Noto Color Emoji', monospace" font-size="16">${icon}</text>
-  <text x="26" y="22" font-family="monospace" font-size="15" font-weight="bold" fill="#e0a458">${esc(value)}</text>
-  <text x="26" y="22" dx="${String(value).length * 9 + 8}" font-family="monospace" font-size="12" fill="#c9d1d9">${esc(label)}</text>
+// Stacks 3 icon+value+label rows into ONE transparent, borderless SVG.
+// Width auto-sizes to the widest row so nothing gets clipped.
+function stackedStats(rows) {
+  const rowHeight = 34;
+  const fontSize = 15;
+  const charW = fontSize * 0.62;
+
+  const widths = rows.map((r) => {
+    const valueW = String(r.value).length * charW;
+    const labelW = r.label.length * (fontSize * 0.8 * 0.62);
+    return 30 + valueW + 10 + labelW + 10; // icon col + value + gap + label + margin
+  });
+  const width = Math.ceil(Math.max(...widths));
+  const height = rows.length * rowHeight;
+
+  const rowsSVG = rows
+    .map((r, i) => {
+      const y = i * rowHeight + rowHeight / 2 + 5;
+      const valueX = 30;
+      const valueW = String(r.value).length * charW;
+      const labelX = valueX + valueW + 10;
+      return `
+  <text x="0" y="${y}" font-family="'Segoe UI Emoji','Noto Color Emoji',monospace" font-size="16">${r.icon}</text>
+  <text x="${valueX}" y="${y}" font-family="monospace" font-size="${fontSize}" font-weight="bold" fill="#e0a458">${esc(r.value)}</text>
+  <text x="${labelX}" y="${y}" font-family="monospace" font-size="${fontSize * 0.8}" fill="#c9d1d9">${esc(r.label)}</text>`;
+    })
+    .join('');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${rowsSVG}
 </svg>`;
 }
 
@@ -106,16 +127,18 @@ function miniStat(icon, value, label) {
   const lang = topLanguage(user.repositories.nodes);
   const memberSinceYear = new Date(user.createdAt).getFullYear();
 
-  const stats = [
-    { file: 'side-stat-streak.svg', icon: '🔥', value: longestStreak, label: 'Longest Streak' },
-    { file: 'side-stat-prs.svg', icon: '🔀', value: user.pullRequests.totalCount, label: 'Pull Requests' },
-    { file: 'side-stat-issues.svg', icon: '🐛', value: user.issues.totalCount, label: 'Issues' },
-    { file: 'side-stat-member.svg', icon: '📅', value: memberSinceYear, label: 'Member Since' },
-    { file: 'side-stat-lang.svg', icon: '🏷️', value: lang, label: 'Top Language' },
-    { file: 'side-stat-forks.svg', icon: '🍴', value: totalForks, label: 'Forks' },
+  const leftRows = [
+    { icon: '🔥', value: longestStreak, label: 'Longest Streak' },
+    { icon: '🔀', value: user.pullRequests.totalCount, label: 'Pull Requests' },
+    { icon: '🐛', value: user.issues.totalCount, label: 'Issues' },
   ];
 
-  for (const s of stats) {
-    fs.writeFileSync(s.file, miniStat(s.icon, s.value, s.label));
-  }
+  const rightRows = [
+    { icon: '📅', value: memberSinceYear, label: 'Member Since' },
+    { icon: '🏷️', value: lang, label: 'Top Language' },
+    { icon: '🍴', value: totalForks, label: 'Forks' },
+  ];
+
+  fs.writeFileSync('side-stats-left.svg', stackedStats(leftRows));
+  fs.writeFileSync('side-stats-right.svg', stackedStats(rightRows));
 })();
