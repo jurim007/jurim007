@@ -1,4 +1,4 @@
-name: Update Profile Card
+name: Update Streak Card
 on:
   schedule:
     - cron: "0 0 * * *"   # daily
@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Generate profile card
-        run: node scripts/generate-profile-card.js
+      - name: Generate streak card
+        run: node scripts/generate-streak-card.js
         env:
           GH_USERNAME: jurim007
           METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
@@ -25,5 +25,5 @@ jobs:
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: update profile card"
-          file_pattern: generated/profile-card.svg
+          commit_message: "chore: update streak card"
+          file_pattern: generated/streak-card.svg
