@@ -1,7 +1,7 @@
-name: Update GitHub Stats Card
+name: Update Profile Card
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 0 * * *"   # daily
   workflow_dispatch: {}
 
 jobs:
@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Generate stats card
-        run: node scripts/generate-stats.js
+      - name: Generate profile card
+        run: node scripts/generate-profile-card.js
         env:
           GH_USERNAME: jurim007
           METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
@@ -25,5 +25,5 @@ jobs:
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: update stats card"
-          file_pattern: stats-dark.svg stats-light.svg
+          commit_message: "chore: update profile card"
+          file_pattern: profile-card.svg
