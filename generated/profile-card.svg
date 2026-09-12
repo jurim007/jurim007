@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="694.8" height="395">
+  <rect width="100%" height="100%" rx="10" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <text x="20" y="30" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    +               </text>
+<text x="20" y="45" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {]              </text>
+<text x="20" y="60" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {]              </text>
+<text x="20" y="75" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{              </text>
+<text x="20" y="90" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{              </text>
+<text x="20" y="105" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{ ]            </text>
+<text x="20" y="120" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    ]&gt; ]            </text>
+<text x="20" y="135" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{&gt; ]           </text>
+<text x="20" y="150" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {&gt;{{&gt;           </text>
+<text x="20" y="165" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {  {{{          </text>
+<text x="20" y="180" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {+   {{]        </text>
+<text x="20" y="195" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{]   {{{&gt;+     </text>
+<text x="20" y="210" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{{&gt;+   {{{     </text>
+<text x="20" y="225" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    { {{{{]&gt;  {     </text>
+<text x="20" y="240" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {&gt;   ]{{{       </text>
+<text x="20" y="255" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">     {{{-  {{{&gt;     </text>
+<text x="20" y="270" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">      {{{{]&gt;+]{     </text>
+<text x="20" y="285" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{{{]+&gt;]{{&gt;     </text>
+<text x="20" y="300" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    { &gt;]]{{]-       </text>
+<text x="20" y="315" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">    {{++ -]{{&gt;      </text>
+<text x="20" y="330" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">     ]{{]+  &gt;{{     </text>
+<text x="20" y="345" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">       ]]{{]]{{     </text>
+<text x="20" y="360" fill="#8b949e" font-family="monospace" font-size="12" xml:space="preserve">          -&gt;&gt;&gt;      </text>
+  <text x="204" y="30" font-family="monospace" font-size="12"><tspan fill="#e0a458" font-weight="bold">juri@malaj </tspan><tspan fill="#4b5263" font-weight="bold">─────────────────────────────────────────────────────</tspan></text>
+<text x="204" y="45" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">OS: </tspan><tspan fill="#4b5263">─────────────────────────────────</tspan><tspan fill="#e0a458"> Linux Ubuntu, Android 13</tspan></text>
+<text x="204" y="60" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Uptime: </tspan><tspan fill="#4b5263">──────────────────────────</tspan><tspan fill="#e0a458"> 22 years, 3 months, 22 days</tspan></text>
+<text x="204" y="75" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Host: </tspan><tspan fill="#4b5263">───────────────────────────────────────</tspan><tspan fill="#e0a458"> Holberton School</tspan></text>
+<text x="204" y="90" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Kernel: </tspan><tspan fill="#4b5263">──────────────────────────────────────────────</tspan><tspan fill="#e0a458"> Student</tspan></text>
+<text x="204" y="105" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">IDE: </tspan><tspan fill="#4b5263">─────────────────────────────────────────────────</tspan><tspan fill="#e0a458"> VS Code</tspan></text>
+<text x="204" y="135" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Languages.Programming: </tspan><tspan fill="#4b5263">────────────────</tspan><tspan fill="#e0a458"> JavaScript, TypeScript</tspan></text>
+<text x="204" y="150" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Languages.Computer: </tspan><tspan fill="#4b5263">────────────────────</tspan><tspan fill="#e0a458"> HTML, CSS, JSON, YAML</tspan></text>
+<text x="204" y="165" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Languages.Real: </tspan><tspan fill="#4b5263">────────────────────────────</tspan><tspan fill="#e0a458"> English, Albanian</tspan></text>
+<text x="204" y="195" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Hobbies.Competitive: </tspan><tspan fill="#4b5263">─────────────────────────</tspan><tspan fill="#e0a458"> Competitive CS2</tspan></text>
+<text x="204" y="210" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Hobbies.Creative: </tspan><tspan fill="#4b5263">────────</tspan><tspan fill="#e0a458"> Minecraft (Server Hosting + Builds)</tspan></text>
+<text x="204" y="240" font-family="monospace" font-size="12"><tspan fill="#e0a458" font-weight="bold">- Contact </tspan><tspan fill="#4b5263" font-weight="bold">──────────────────────────────────────────────────────</tspan></text>
+<text x="204" y="255" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Email: </tspan><tspan fill="#4b5263">──────────────────────────────────</tspan><tspan fill="#e0a458"> juri.malaj@gmail.com</tspan></text>
+<text x="204" y="270" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">LinkedIn: </tspan><tspan fill="#4b5263">─────────────────────────────────────────</tspan><tspan fill="#e0a458"> juri-malaj</tspan></text>
+<text x="204" y="285" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Discord: </tspan><tspan fill="#4b5263">────────────────────────────────────────────</tspan><tspan fill="#e0a458"> jurim007</tspan></text>
+<text x="204" y="315" font-family="monospace" font-size="12"><tspan fill="#e0a458" font-weight="bold">- GitHub Stats </tspan><tspan fill="#4b5263" font-weight="bold">─────────────────────────────────────────────────</tspan></text>
+<text x="204" y="330" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Repos: </tspan><tspan fill="#4b5263">────</tspan><tspan fill="#e0a458"> 11 {Contributed: 3}</tspan><tspan fill="#c9d1d9"> | Stars: </tspan><tspan fill="#4b5263">─────────</tspan><tspan fill="#e0a458"> 0</tspan></text>
+<text x="204" y="345" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Commits: </tspan><tspan fill="#4b5263">────────────────</tspan><tspan fill="#e0a458"> 354</tspan><tspan fill="#c9d1d9"> | Followers: </tspan><tspan fill="#4b5263">──────</tspan><tspan fill="#e0a458"> 0</tspan></text>
+<text x="204" y="360" font-family="monospace" font-size="12"><tspan fill="#4b5263">. </tspan><tspan fill="#c9d1d9">Lines of Code on GitHub: </tspan><tspan fill="#4b5263">─</tspan><tspan fill="#c9d1d9"> 93,220 (</tspan><tspan fill="#3fb950"> 447,810++,</tspan><tspan fill="#f85149"> 354,590--</tspan><tspan fill="#c9d1d9"> )</tspan></text>
+
+</svg>
