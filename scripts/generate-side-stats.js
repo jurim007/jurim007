@@ -123,7 +123,7 @@ const GAP = 8;
 // centered row (left edge for the left block, right edge for the right
 // block). Bump this up to push both blocks further out toward the readme's
 // full width; bring it down to pull them in closer to the girls image.
-const EDGE_MARGIN = 0;
+const EDGE_MARGIN = -50;
 
 // The width this block of rows would naturally render at, based purely on
 // its own text — i.e. with no forced/shared width applied. Used to figure
