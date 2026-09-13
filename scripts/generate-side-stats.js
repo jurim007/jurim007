@@ -122,7 +122,7 @@ const GAP = 8;
 // (x=0 for the left block, the true right edge for the right block).
 // Raise this to push the girls image further from the stats; lower it to
 // bring everything closer together.
-const INNER_PADDING = 180;
+const INNER_PADDING = 50;
 
 // Pure text-driven width, no padding included — used only to figure out
 // which side (left/right) needs more room before both are equalized.
