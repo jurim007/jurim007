@@ -107,8 +107,8 @@ function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// side: 'left'  -> icon, value, label   (icon nearest the LEFT edge)
-// side: 'right' -> label, value, icon   (icon nearest the RIGHT edge — mirror of left)
+// side: 'left'  -> icon, value, label   (icon sits flush on the LEFT edge)
+// side: 'right' -> label, value, icon   (icon sits flush on the RIGHT edge)
 const ROW_HEIGHT = 34;
 const FONT_SIZE = 15;
 const SMALL_FONT_SIZE = FONT_SIZE * 0.8;
@@ -116,35 +116,30 @@ const CHAR_W = FONT_SIZE * 0.62;
 const SMALL_CHAR_W = SMALL_FONT_SIZE * 0.62;
 const ICON_SIZE = 20;
 const GAP = 8;
-// Fixed, small gap between the icon and the TRUE outer edge of the whole
-// row (left edge for the left block, right edge for the right block).
-// Keep this small — the icon should hug the edge, not sit far from it.
-const EDGE_PADDING = 24;
-// How wide you want each side block to be overall. This is the "spread the
-// blocks out toward the readme's edges" control — raise it to push the
-// blocks wider. Any width beyond what the text itself needs is added on the
-// INNER side (facing the girls image), never on the outer-edge side, so the
-// icon/text always stays flush near the true edge no matter how this is set.
-const MIN_SEGMENT_WIDTH = 420;
+// The ONLY spacing knob. Blank space added on the INNER side of each block
+// (the side facing the girls image) — nothing is added on the outer edge,
+// so the icon/text sit flush against the true left/right edge of the row
+// (x=0 for the left block, the true right edge for the right block).
+// Raise this to push the girls image further from the stats; lower it to
+// bring everything closer together.
+const INNER_PADDING = 180;
 
-// The width this block of rows needs based purely on its own icon/value/label
-// text, ignoring MIN_SEGMENT_WIDTH — used only to figure out which side
-// (left/right) needs more room before both are equalized.
-function naturalWidth(rows) {
+// Pure text-driven width, no padding included — used only to figure out
+// which side (left/right) needs more room before both are equalized.
+function naturalContentWidth(rows) {
   const contentWidths = rows.map((r) => {
     const valueW = String(r.value).length * CHAR_W;
     const labelW = r.label.length * SMALL_CHAR_W;
     return ICON_SIZE + GAP + valueW + GAP + labelW;
   });
-  return Math.ceil(Math.max(...contentWidths)) + EDGE_PADDING;
+  return Math.ceil(Math.max(...contentWidths));
 }
 
-// `width` is always passed in explicitly — the shared width computed in the
-// IIFE below, taking MIN_SEGMENT_WIDTH into account — so the left and right
-// blocks can be rendered at an identical width. The icon itself is always
-// placed EDGE_PADDING away from the TRUE outer edge (x=0 for left, x=width
-// for right); any slack between the natural content width and the final
-// shared `width` shows up on the inner side, next to the girls image.
+// `width` is the final canvas width (shared content width + INNER_PADDING,
+// computed in the IIFE below) so left and right render at an identical
+// size. The icon is always flush against the TRUE outer edge (x=0 for
+// left, x=width-iconSize for right, no gap) — all the padding lands on the
+// inner side, next to the girls image.
 function stackedStats(rows, side, width) {
   const rowHeight = ROW_HEIGHT;
   const fontSize = FONT_SIZE;
@@ -165,7 +160,7 @@ function stackedStats(rows, side, width) {
       const labelW = r.label.length * smallCharW;
 
       if (side === 'left') {
-        const iconX = EDGE_PADDING; // icon sits close to the TRUE left edge, always
+        const iconX = 0; // flush against the TRUE left edge, no gap
         const valueX = iconX + iconSize + gap;
         const labelX = valueX + valueW + gap;
         const iconTag = b64
@@ -176,10 +171,10 @@ function stackedStats(rows, side, width) {
   <text x="${valueX}" y="${y}" font-family="monospace" font-size="${fontSize}" font-weight="bold" fill="#e0a458">${esc(r.value)}</text>
   <text x="${labelX}" y="${y}" font-family="monospace" font-size="${smallFontSize}" fill="#c9d1d9">${esc(r.label)}</text>`;
       } else {
-        // build from the TRUE right edge inward: icon, then value, then label.
-        // Uses the final `width` (not a fixed offset), so any extra shared
-        // width shows up as blank space on the left of this block instead.
-        const iconX = width - EDGE_PADDING - iconSize;
+        // Built from the TRUE right edge inward: icon flush at width - iconSize,
+        // no gap. Any slack between content and `width` lands on the left
+        // (inner) side of this block, next to the girls image.
+        const iconX = width - iconSize;
         const valueX = iconX - gap - valueW;
         const labelX = valueX - gap - labelW;
         const iconTag = b64
@@ -218,10 +213,11 @@ function stackedStats(rows, side, width) {
     { key: 'forks', value: totalForks, label: 'Forks' },
   ];
 
-  // Whichever side needs more room (or MIN_SEGMENT_WIDTH, whichever is
-  // bigger) dictates the shared width; the narrower side just gets padded
-  // out to match, with the extra blank space landing on its inner edge.
-  const sharedWidth = Math.max(naturalWidth(leftRows), naturalWidth(rightRows), MIN_SEGMENT_WIDTH);
+  // Equalize on pure text width first, THEN add the one padding value —
+  // that's what keeps left/right identical in size regardless of which
+  // side has longer labels, while still giving one single spread control.
+  const sharedContentWidth = Math.max(naturalContentWidth(leftRows), naturalContentWidth(rightRows));
+  const sharedWidth = sharedContentWidth + INNER_PADDING;
 
   fs.writeFileSync(path.join(OUT_DIR, 'side-stats-left.svg'), stackedStats(leftRows, 'left', sharedWidth));
   fs.writeFileSync(path.join(OUT_DIR, 'side-stats-right.svg'), stackedStats(rightRows, 'right', sharedWidth));
