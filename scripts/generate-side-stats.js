@@ -119,12 +119,17 @@ const CHAR_W = FONT_SIZE * 0.62;
 const SMALL_CHAR_W = SMALL_FONT_SIZE * 0.62;
 const ICON_SIZE = 20;
 const GAP = 8;
+// How far the icon/stat text sits from the TRUE outer edge of the whole
+// centered row (left edge for the left block, right edge for the right
+// block). Bump this up to push both blocks further out toward the readme's
+// full width; bring it down to pull them in closer to the girls image.
+const EDGE_MARGIN = 220;
 
 // The width this block of rows would naturally render at, based purely on
 // its own text — i.e. with no forced/shared width applied. Used to figure
 // out which of the left/right blocks is wider so the narrower one can be
 // padded out to match.
-function naturalWidth(rows, edgeMargin = 40) {
+function naturalWidth(rows, edgeMargin = EDGE_MARGIN) {
   const contentWidths = rows.map((r) => {
     const valueW = String(r.value).length * CHAR_W;
     const labelW = r.label.length * SMALL_CHAR_W;
@@ -138,7 +143,7 @@ function naturalWidth(rows, edgeMargin = 40) {
 // the left and right blocks can be rendered at an identical width — that's
 // what keeps them symmetric (and the centered image between them truly
 // centered) regardless of which side has longer labels/values.
-function stackedStats(rows, side, width, edgeMargin = 40) {
+function stackedStats(rows, side, width, edgeMargin = EDGE_MARGIN) {
   const rowHeight = ROW_HEIGHT;
   const fontSize = FONT_SIZE;
   const smallFontSize = SMALL_FONT_SIZE;
