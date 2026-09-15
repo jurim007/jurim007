@@ -39,23 +39,38 @@ jobs:
             const count = result.user.contributionsCollection.contributionCalendar.totalContributions;
             const digits = String(count).split("");
 
-            const drawWidth = 90;
-            const stepWidth = 60; // drawWidth (90) + 5px gap = no overlap, small breathing room
-            const digitHeight = 150;
-            const totalWidth = (digits.length - 1) * stepWidth + drawWidth;
+            // PNG stores width/height as big-endian uint32s starting at byte 16
+            // (8-byte signature + 4-byte chunk length + 4-byte "IHDR" type).
+            function getPngSize(buffer) {
+              const width = buffer.readUInt32BE(16);
+              const height = buffer.readUInt32BE(20);
+              return { width, height };
+            }
 
-            const images = digits
-              .map((d, i) => {
-                const dir = `assets/counter/${d}`;
-                const variants = fs.readdirSync(dir).filter(f => f.endsWith('.png'));
-                const chosen = variants[Math.floor(Math.random() * variants.length)];
-                const bytes = fs.readFileSync(`${dir}/${chosen}`);
-                const base64 = bytes.toString('base64');
-                return `<image href="data:image/png;base64,${base64}" x="${i * stepWidth}" y="0" width="${drawWidth}" height="${digitHeight}" />`;
-              })
-              .join("");
+            const targetHeight = 150; // every character scales to this height, own width preserved
+            const gap = 3;
 
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${digitHeight}">${images}</svg>`;
+            let cursorX = 0;
+            const imageTags = [];
+
+            for (const d of digits) {
+              const dir = `assets/counter/${d}`;
+              const variants = fs.readdirSync(dir).filter(f => f.endsWith('.png'));
+              const chosen = variants[Math.floor(Math.random() * variants.length)];
+              const bytes = fs.readFileSync(`${dir}/${chosen}`);
+              const { width, height } = getPngSize(bytes);
+              const scaledWidth = width * (targetHeight / height);
+
+              const base64 = bytes.toString('base64');
+              imageTags.push(
+                `<image href="data:image/png;base64,${base64}" x="${cursorX}" y="0" width="${scaledWidth}" height="${targetHeight}" />`
+              );
+
+              cursorX += scaledWidth + gap;
+            }
+
+            const totalWidth = cursorX - gap; // no trailing gap after the last character
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${targetHeight}">${imageTags.join("")}</svg>`;
 
             fs.mkdirSync('generated', { recursive: true });
             fs.writeFileSync('generated/contributions.svg', svg);
