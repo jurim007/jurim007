@@ -20,7 +20,7 @@ jobs:
           token: ${{ secrets.METRICS_TOKEN }}
 
       - name: Pull latest changes
-        run: git pull --rebase origin main
+        run: git pull --rebase --autostash origin main
 
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
