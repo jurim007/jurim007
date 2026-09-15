@@ -46,9 +46,13 @@ jobs:
 
             const images = digits
               .map((d, i) => {
-                const bytes = fs.readFileSync(`assets/counter/${d}.png`);
+                const dir = `assets/counter/${d}`;
+                const variants = fs.readdirSync(dir).filter(f => f.endsWith('.png'));
+                const chosen = variants[Math.floor(Math.random() * variants.length)];
+                const bytes = fs.readFileSync(`${dir}/${chosen}`);
                 const base64 = bytes.toString('base64');
-                return `<image href="data:image/png;base64,${base64}" x="${i * stepWidth}" y="0" width="${drawWidth}" height="${digitHeight}" />`;              })
+                return `<image href="data:image/png;base64,${base64}" x="${i * stepWidth}" y="0" width="${drawWidth}" height="${digitHeight}" />`;
+              })
               .join("");
 
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${digitHeight}">${images}</svg>`;
