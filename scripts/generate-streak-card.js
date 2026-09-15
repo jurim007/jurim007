@@ -3,11 +3,6 @@ const fs = require('fs');
 const USERNAME = process.env.GH_USERNAME;
 const TOKEN = process.env.METRICS_TOKEN;
 
-// Drop your own art in here with these exact filenames — nothing else
-// in the script needs to change.
-const ICON_LEFT = 'assets/batman/1.png';
-const ICON_RIGHT = 'assets/batman/2.png';
-
 async function graphql(query, variables = {}) {
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
@@ -52,58 +47,67 @@ async function getContributionDays() {
   return days;
 }
 
-function currentStreak(days) {
-  // days are in chronological order; walk backwards from the most recent day
+// Returns both the streak length and the date range it covers.
+function currentStreakInfo(days) {
   let streak = 0;
+  let startDate = null;
   for (let i = days.length - 1; i >= 0; i--) {
     if (days[i].contributionCount > 0) {
       streak++;
+      startDate = days[i].date;
     } else {
-      // allow today to be a zero-contribution day without breaking the streak
-      if (i === days.length - 1) continue;
+      if (i === days.length - 1) continue; // today can be zero without breaking the streak
       break;
     }
   }
-  return streak;
+  const endDate = days[days.length - 1].date;
+  return { streak, startDate, endDate };
 }
 
-function toBase64(path) {
-  if (!fs.existsSync(path)) return null;
-  return fs.readFileSync(path).toString('base64');
+function formatShort(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00Z');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 }
 
-function buildSVG(streak) {
-  const bg = '#0d1117';
-  const border = '#30363d';
-  const val = '#e0a458';
-  const label = '#c9d1d9';
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
-  const iconSize = 60;
-  const width = 260;
-  const height = 90;
+function buildSVG({ streak, startDate, endDate }) {
+  const gold = '#e0a458';   // circle + flame + title
+  const light = '#c9d1d9';  // number + date range
 
-  const leftB64 = toBase64(ICON_LEFT);
-  const rightB64 = toBase64(ICON_RIGHT);
+  const width = 180;
+  const height = 230;
+  const cx = width / 2;
+  const cy = 95;
+  const r = 62;
 
-  const leftImg = leftB64
-    ? `<image href="data:image/png;base64,${leftB64}" x="20" y="${(height - iconSize) / 2}" width="${iconSize}" height="${iconSize}" />`
-    : '';
-  const rightImg = rightB64
-    ? `<image href="data:image/png;base64,${rightB64}" x="${width - 20 - iconSize}" y="${(height - iconSize) / 2}" width="${iconSize}" height="${iconSize}" />`
-    : '';
+  const dateRange =
+    streak > 0 ? `${formatShort(startDate)} - ${formatShort(endDate)}` : formatShort(endDate);
+
+  // Generic flame silhouette (not tied to any specific brand mark), sized ~34x40,
+  // positioned straddling the top of the circle like the reference.
+  const flame = `
+    <g transform="translate(${cx - 17}, ${cy - r - 22})" fill="${gold}">
+      <path d="M17,2 C10,10 6,17 10,24 C5,21 3,27 6,33
+               C1,30 -1,38 5,43 C0,46 3,55 12,55
+               C21,55 26,49 25,41 C29,47 32,41 29,35
+               C34,38 36,30 29,27 C32,21 26,11 17,2 Z" />
+    </g>`;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-  <rect width="100%" height="100%" rx="10" fill="${bg}" stroke="${border}" stroke-width="1"/>
-  ${leftImg}
-  <text x="50%" y="42%" text-anchor="middle" font-family="monospace" font-size="28" font-weight="bold" fill="${val}">${streak}</text>
-  <text x="50%" y="68%" text-anchor="middle" font-family="monospace" font-size="12" fill="${label}">Current Streak</text>
-  ${rightImg}
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${gold}" stroke-width="6" />
+  ${flame}
+  <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-family="monospace" font-size="40" font-weight="bold" fill="${light}">${streak}</text>
+  <text x="${cx}" y="${cy + r + 34}" text-anchor="middle" font-family="monospace" font-size="17" font-weight="bold" fill="${gold}">Current Streak</text>
+  <text x="${cx}" y="${cy + r + 56}" text-anchor="middle" font-family="monospace" font-size="13" fill="${light}">${esc(dateRange)}</text>
 </svg>`;
 }
 
 (async () => {
   const days = await getContributionDays();
-  const streak = currentStreak(days);
+  const info = currentStreakInfo(days);
   fs.mkdirSync('generated', { recursive: true });
-  fs.writeFileSync('generated/streak-card.svg', buildSVG(streak));
+  fs.writeFileSync('generated/streak-card.svg', buildSVG(info));
 })();
