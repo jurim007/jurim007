@@ -12,15 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Generate streak circle
+        uses: DenverCoder1/github-readme-streak-stats@main
         with:
-          node-version: 20
+          options: user=jurim007&hide_total_contributions=true&hide_longest_streak=true&background=0D1117&border=30363D&border_radius=10&ring=E0A458&fire=E0A458&currStreakNum=C9D1D9&currStreakLabel=E0A458&dates=C9D1D9&card_width=300&card_height=170
+          path: generated/streak-card.svg
+          token: ${{ secrets.METRICS_TOKEN }}
 
-      - name: Generate streak card
-        run: node scripts/generate-streak-card.js
-        env:
-          GH_USERNAME: jurim007
-          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+      - name: Pull latest changes
+        run: git pull --rebase origin main
 
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
