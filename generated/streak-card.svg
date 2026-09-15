@@ -1,7 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="260" height="90">
-  <rect width="100%" height="100%" rx="10" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="230">
+  <circle cx="90" cy="95" r="62" fill="none" stroke="#e0a458" stroke-width="6" />
   
-  <text x="50%" y="42%" text-anchor="middle" font-family="monospace" font-size="28" font-weight="bold" fill="#e0a458">6</text>
-  <text x="50%" y="68%" text-anchor="middle" font-family="monospace" font-size="12" fill="#c9d1d9">Current Streak</text>
-  
+    <g transform="translate(73, 11)" fill="#e0a458">
+      <path d="M17,2 C10,10 6,17 10,24 C5,21 3,27 6,33
+               C1,30 -1,38 5,43 C0,46 3,55 12,55
+               C21,55 26,49 25,41 C29,47 32,41 29,35
+               C34,38 36,30 29,27 C32,21 26,11 17,2 Z" />
+    </g>
+  <text x="90" y="107" text-anchor="middle" font-family="monospace" font-size="40" font-weight="bold" fill="#c9d1d9">6</text>
+  <text x="90" y="191" text-anchor="middle" font-family="monospace" font-size="17" font-weight="bold" fill="#e0a458">Current Streak</text>
+  <text x="90" y="213" text-anchor="middle" font-family="monospace" font-size="13" fill="#c9d1d9">Sep 10 - Sep 15</text>
 </svg>
