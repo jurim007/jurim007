@@ -24,8 +24,8 @@
 ---
 
 <p align="center">
-  <img src="https://streak-stats.demolab.com/?user=jurim007&theme=dracula&hide_border=true" width="80%" />
-  <!-- <img src="generated/streak-card.svg" width="60%" /> -->
+  <!-- <img src="https://streak-stats.demolab.com/?user=jurim007&theme=dracula&hide_border=true" width="80%" /> -->
+  <img src="generated/streak-card.svg" width="60%" />
 </p>
 
 <p align="center">
