@@ -11,7 +11,91 @@
 
 
   <!-- ======================================================
-       BACKGROUND
+       DEFINITIONS
+       ====================================================== -->
+
+  <defs>
+
+    <!--
+      Ring mask
+
+      White = keep the ring visible
+      Black = remove the ring
+
+      The complete circle is drawn normally, then the exact
+      outer flame silhouette is removed from it.
+    -->
+
+    <mask
+      id="ring-cut"
+      maskUnits="userSpaceOnUse"
+      x="0"
+      y="0"
+      width="300"
+      height="110"
+    >
+
+      <!-- Keep everything by default -->
+
+      <rect
+        x="0"
+        y="0"
+        width="300"
+        height="110"
+        fill="white"
+      />
+
+
+      <!--
+        Remove the flame silhouette.
+
+        The black stroke creates a very small amount of
+        breathing room between the flame and circle.
+
+        Because the stroke follows the exact flame path,
+        the cut remains tailored to the flame instead of
+        looking like a rectangular or generic gap.
+      -->
+
+      <g
+        transform="
+          translate(54.8 13)
+          scale(0.4)
+        "
+      >
+
+        <path
+          d="
+    M 8.1250 37.3984
+    C 8.1250 46.9141 15.9063 53.6406 26.8750 53.6406
+    C 39.3203 53.6406 47.8750 45.6016 47.8750 32.3828
+    C 47.8750 11.7578 29.7812 2.3594 16.5860 2.3594
+    C 14.5000 2.3594 13.4687 3.3906 13.4687 4.5859
+    C 13.4687 5.5469 13.9844 6.3437 14.7578 7.4453
+    C 16.6328 10.0234 19.8203 13.7734 19.8203 18.4844
+    C 19.8203 18.8828 19.7969 19.2813 19.7500 19.7031
+    C 18.4375 17.2422 16.1172 15.5078 13.3047 15.5078
+    C 12.5078 15.5078 12.0860 15.9766 12.0860 16.6562
+    C 12.0860 17.4766 12.2734 18.0625 12.2734 20.6172
+    C 12.2734 25.5156 8.1250 28.8203 8.1250 37.3984
+    Z
+  "
+          fill="black"
+          stroke="black"
+          stroke-width="5"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+
+      </g>
+
+    </mask>
+
+  </defs>
+
+
+  <!-- ======================================================
+       CARD BACKGROUND
        ====================================================== -->
 
   <rect
@@ -26,72 +110,36 @@
 
 
   <!-- ======================================================
-       STREAK RING
-
-       Center: 66, 57
-       Radius: 34
-
-       Instead of drawing a complete circle, the ring stops
-       on either side of the flame.
-
-       This gives us a REAL opening rather than covering part
-       of a circle with the background color.
-
-       The two endpoints are deliberately positioned to follow
-       the bottom-left and bottom-right silhouette of the flame.
+       PERFECT STREAK CIRCLE
        ====================================================== -->
 
-
-  <!-- LEFT + BOTTOM + RIGHT portion of ring -->
-
-  <path
-    d="
-      M 51.2 26.4
-
-      C 39.8 31.8
-        32 43.3
-        32 57
-
-      C 32 75.8
-        47.2 91
-        66 91
-
-      C 84.8 91
-        100 75.8
-        100 57
-
-      C 100 43.1
-        91.9 31.4
-        80.1 26.2
-    "
+  <circle
+    cx="66"
+    cy="57"
+    r="34"
     fill="none"
     stroke="#E0A458"
     stroke-width="4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    mask="url(#ring-cut)"
   />
 
 
   <!-- ======================================================
        FLAME
 
-       Exact path supplied from flame-fill-svgrepo-com.svg.
+       Exact flame SVG path supplied by you.
 
-       Original:
-           viewBox="0 0 56 56"
+       It now sits INSIDE the circle rather than floating above
+       it.
 
-       Scale:
-           0.40
-
-       This gives the flame roughly a 22px × 22px footprint.
-
-       It is centered directly above the streak number.
+       The circle underneath has been removed according to the
+       flame's actual outer silhouette.
        ====================================================== -->
 
   <g
     transform="
-      translate(54.8 6)
-      scale(0.40)
+      translate(54.8 13)
+      scale(0.4)
     "
   >
 
@@ -161,7 +209,7 @@
 
 
   <!-- ======================================================
-       DATE RANGE
+       DATE / STATUS
        ====================================================== -->
 
   <text
