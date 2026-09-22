@@ -1,27 +1,44 @@
 name: Update Streak Card
+
 on:
   schedule:
-    - cron: "0 0 * * *"   # daily
-  workflow_dispatch: {}
+    # Runs every day at midnight UTC
+    - cron: "0 0 * * *"
+
+  # Lets you run it manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
+
     steps:
-      - uses: actions/checkout@v4
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Generate streak circle
-        uses: DenverCoder1/github-readme-streak-stats@main
+      # Node is used by our custom streak generator
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          options: user=jurim007&hide_total_contributions=true&hide_longest_streak=true&background=0D1117&border=30363D&border_radius=10&ring=E0A458&fire=E0A458&currStreakNum=C9D1D9&currStreakLabel=E0A458&dates=C9D1D9&card_width=300&card_height=170
-          path: generated/streak-card.svg
-          token: ${{ secrets.METRICS_TOKEN }}
+          node-version: "20"
 
+      # Generate generated/streak-card.svg
+      - name: Generate streak card
+        env:
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
+          GH_USER: jurim007
+        run: node scripts/generate-streak.js
+
+      # Make sure we're based on the latest version of main
+      # before committing the generated SVG
       - name: Pull latest changes
         run: git pull --rebase --autostash origin main
 
+      # Commit only if the generated card actually changed
       - name: Commit and push if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
