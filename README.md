@@ -33,5 +33,5 @@
 </p>
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=100&section=footer&text=.juri.css&fontFamily=JetBrains%20Mono&fontSize=18&fontColor=C9D1D9&fontAlign=90&fontAlignY=72" />
+  <<img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=100&section=footer&text=./juri.css&fontFamily=Press%20Start%202P&fontSize=14&fontColor=C9D1D9&fontAlign=93&fontAlignY=72" />
 </p>
