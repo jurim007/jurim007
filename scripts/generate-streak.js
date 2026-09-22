@@ -14,7 +14,7 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-// Card
+// Card dimensions
 const WIDTH = 300;
 const HEIGHT = 110;
 
@@ -40,6 +40,7 @@ function graphql(query, variables) {
         hostname: "api.github.com",
         path: "/graphql",
         method: "POST",
+
         headers: {
           Authorization: `Bearer ${TOKEN}`,
           "User-Agent": "streak-card-generator",
@@ -47,6 +48,7 @@ function graphql(query, variables) {
           "Content-Length": Buffer.byteLength(body),
         },
       },
+
       (res) => {
         let data = "";
 
@@ -66,6 +68,7 @@ function graphql(query, variables) {
                     .join("\n")
                 )
               );
+
               return;
             }
 
@@ -121,14 +124,14 @@ function formatDate(date) {
 }
 
 // ============================================================
-// GET CONTRIBUTION DATA
+// FETCH CONTRIBUTIONS
 // ============================================================
 
 async function getContributionDays() {
   const today = dateOnlyUTC();
 
-  // Fetch enough history for long streaks and streaks crossing
-  // the new year.
+  // Fetch one year of history so streaks crossing New Year
+  // still calculate correctly.
   const from = new Date(today);
 
   from.setUTCFullYear(
@@ -201,11 +204,11 @@ function calculateStreak(days) {
   let cursor = today;
 
   /*
-   * If you haven't contributed today yet, yesterday is still
-   * allowed to count as the end of the current streak.
+   * If today has no contribution yet, yesterday can still
+   * remain the end of the current streak.
    *
-   * This prevents the streak from showing 0 immediately after
-   * midnight.
+   * This stops the streak from immediately becoming zero
+   * just because a new day started.
    */
   if (
     (contributions.get(dateKey(cursor)) || 0) === 0
@@ -249,21 +252,31 @@ function generateSVG({
   start,
   end,
 }) {
+  // ----------------------------------------------------------
+  // What appears below "Current Streak"
+  // ----------------------------------------------------------
+
   const dateRange =
     streak > 0
       ? `${formatDate(start)} - ${formatDate(end)}`
       : "No active streak";
 
-  /*
-   * Original flame path supplied by you.
-   *
-   * Original viewBox:
-   *
-   *     0 0 56 56
-   *
-   * We scale it down instead of modifying the path itself,
-   * preserving the original flame proportions.
-   */
+  // ==========================================================
+  // ORIGINAL FLAME SVG
+  //
+  // Supplied from:
+  // flame-fill-svgrepo-com.svg
+  //
+  // Original viewBox:
+  //
+  //     0 0 56 56
+  //
+  // The full path contains:
+  //
+  // 1. Outer flame
+  // 2. Inner flame cutout
+  //
+  // ==========================================================
 
   const flamePath = `
     M 8.1250 37.3984
@@ -293,6 +306,54 @@ function generateSVG({
     Z
   `;
 
+  /*
+   * Only the OUTER shape of the flame.
+   *
+   * We use this for the circle mask.
+   *
+   * This is intentional:
+   *
+   * We don't want the circle to become visible again through
+   * the small inner hole of the flame.
+   */
+  const flameOuterPath = `
+    M 8.1250 37.3984
+    C 8.1250 46.9141 15.9063 53.6406 26.8750 53.6406
+    C 39.3203 53.6406 47.8750 45.6016 47.8750 32.3828
+    C 47.8750 11.7578 29.7812 2.3594 16.5860 2.3594
+    C 14.5000 2.3594 13.4687 3.3906 13.4687 4.5859
+    C 13.4687 5.5469 13.9844 6.3437 14.7578 7.4453
+    C 16.6328 10.0234 19.8203 13.7734 19.8203 18.4844
+    C 19.8203 18.8828 19.7969 19.2813 19.7500 19.7031
+    C 18.4375 17.2422 16.1172 15.5078 13.3047 15.5078
+    C 12.5078 15.5078 12.0860 15.9766 12.0860 16.6562
+    C 12.0860 17.4766 12.2734 18.0625 12.2734 20.6172
+    C 12.2734 25.5156 8.1250 28.8203 8.1250 37.3984
+    Z
+  `;
+
+  // ==========================================================
+  // FLAME POSITION
+  //
+  // Original flame is 56 × 56.
+  //
+  // scale(0.40) gives it an effective size around 22 × 22.
+  //
+  // Y = 13 places the imaginary top circle line approximately
+  // through the middle of the flame.
+  //
+  // If you ever want to tweak it:
+  //
+  // 12 = slightly higher
+  // 13 = current position
+  // 14 = slightly lower
+  // 15 = deeper into ring
+  // ==========================================================
+
+  const FLAME_X = 54.8;
+  const FLAME_Y = 13;
+  const FLAME_SCALE = 0.40;
+
   return `
 <svg
   width="${WIDTH}"
@@ -307,7 +368,77 @@ function generateSVG({
 
 
   <!-- ======================================================
-       BACKGROUND
+       DEFINITIONS
+       ====================================================== -->
+
+  <defs>
+
+    <!--
+      Ring mask
+
+      White = keep the ring visible
+      Black = remove the ring
+
+      The complete circle is drawn normally, then the exact
+      outer flame silhouette is removed from it.
+    -->
+
+    <mask
+      id="ring-cut"
+      maskUnits="userSpaceOnUse"
+      x="0"
+      y="0"
+      width="${WIDTH}"
+      height="${HEIGHT}"
+    >
+
+      <!-- Keep everything by default -->
+
+      <rect
+        x="0"
+        y="0"
+        width="${WIDTH}"
+        height="${HEIGHT}"
+        fill="white"
+      />
+
+
+      <!--
+        Remove the flame silhouette.
+
+        The black stroke creates a very small amount of
+        breathing room between the flame and circle.
+
+        Because the stroke follows the exact flame path,
+        the cut remains tailored to the flame instead of
+        looking like a rectangular or generic gap.
+      -->
+
+      <g
+        transform="
+          translate(${FLAME_X} ${FLAME_Y})
+          scale(${FLAME_SCALE})
+        "
+      >
+
+        <path
+          d="${flameOuterPath}"
+          fill="black"
+          stroke="black"
+          stroke-width="5"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+
+      </g>
+
+    </mask>
+
+  </defs>
+
+
+  <!-- ======================================================
+       CARD BACKGROUND
        ====================================================== -->
 
   <rect
@@ -322,72 +453,36 @@ function generateSVG({
 
 
   <!-- ======================================================
-       STREAK RING
-
-       Center: 66, 57
-       Radius: 34
-
-       Instead of drawing a complete circle, the ring stops
-       on either side of the flame.
-
-       This gives us a REAL opening rather than covering part
-       of a circle with the background color.
-
-       The two endpoints are deliberately positioned to follow
-       the bottom-left and bottom-right silhouette of the flame.
+       PERFECT STREAK CIRCLE
        ====================================================== -->
 
-
-  <!-- LEFT + BOTTOM + RIGHT portion of ring -->
-
-  <path
-    d="
-      M 51.2 26.4
-
-      C 39.8 31.8
-        32 43.3
-        32 57
-
-      C 32 75.8
-        47.2 91
-        66 91
-
-      C 84.8 91
-        100 75.8
-        100 57
-
-      C 100 43.1
-        91.9 31.4
-        80.1 26.2
-    "
+  <circle
+    cx="66"
+    cy="57"
+    r="34"
     fill="none"
     stroke="${ACCENT}"
     stroke-width="4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    mask="url(#ring-cut)"
   />
 
 
   <!-- ======================================================
        FLAME
 
-       Exact path supplied from flame-fill-svgrepo-com.svg.
+       Exact flame SVG path supplied by you.
 
-       Original:
-           viewBox="0 0 56 56"
+       It now sits INSIDE the circle rather than floating above
+       it.
 
-       Scale:
-           0.40
-
-       This gives the flame roughly a 22px × 22px footprint.
-
-       It is centered directly above the streak number.
+       The circle underneath has been removed according to the
+       flame's actual outer silhouette.
        ====================================================== -->
 
   <g
     transform="
-      translate(54.8 6)
-      scale(0.40)
+      translate(${FLAME_X} ${FLAME_Y})
+      scale(${FLAME_SCALE})
     "
   >
 
@@ -431,7 +526,7 @@ function generateSVG({
 
 
   <!-- ======================================================
-       DATE RANGE
+       DATE / STATUS
        ====================================================== -->
 
   <text
@@ -469,6 +564,10 @@ async function main() {
   if (result.streak > 0) {
     console.log(
       `Streak range: ${dateKey(result.start)} -> ${dateKey(result.end)}`
+    );
+  } else {
+    console.log(
+      "No active streak."
     );
   }
 
