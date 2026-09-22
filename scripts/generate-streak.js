@@ -425,7 +425,7 @@ function generateSVG({
           d="${flameOuterPath}"
           fill="black"
           stroke="black"
-          stroke-width="6"
+          stroke-width="8"
           stroke-linejoin="round"
           stroke-linecap="round"
         />
