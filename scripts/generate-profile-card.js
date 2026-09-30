@@ -13,7 +13,7 @@ const HOST_LINE = 'Holberton School';
 const KERNEL_LINE = 'Student';
 const IDE_LINE = 'VS Code';
 
-const LANG_PROGRAMMING = 'JavaScript, TypeScript';
+const LANG_PROGRAMMING = 'JavaScript, TypeScript, React';
 const LANG_COMPUTER = 'HTML, CSS, JSON, YAML';
 const LANG_REAL = 'English, Albanian';
 
@@ -27,7 +27,7 @@ const CONTACT = {
 };
 // ────────────────────────────────────────────────────────────────────────────
 
-const ASCII_ART_PATH = 'assets/ascii-art.txt'; // commit your sourcebin art here
+const ASCII_ART_PATH = 'assets/ascii-art.txt';
 const ASCII_ART = fs.existsSync(ASCII_ART_PATH)
   ? fs.readFileSync(ASCII_ART_PATH, 'utf-8').replace(/\n$/, '')
   : '(add assets/ascii-art.txt)';
