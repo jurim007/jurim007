@@ -11,7 +11,7 @@ const BIRTHDATE = '2004-05-21';
 const OS_LINE = 'Linux Ubuntu, Android 13';
 const HOST_LINE = 'Holberton School';
 const KERNEL_LINE = 'Student';
-const IDE_LINE = 'VS Code';
+const IDE_LINE = 'IntelliJ';
 
 const LANG_PROGRAMMING = 'JavaScript, TypeScript, React';
 const LANG_COMPUTER = 'HTML, CSS, JSON, YAML';
