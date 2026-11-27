@@ -1,0 +1,18 @@
+{
+  "header": "juri@malaj",
+  "birthdate": "2004-05-21",
+  "os": "Linux Ubuntu, Android 13",
+  "host": "Holberton School",
+  "kernel": "Student",
+  "ide": "VS Code",
+  "programmingLanguages": "JavaScript, TypeScript, React",
+  "computerLanguages": "HTML, CSS, JSON, YAML",
+  "spokenLanguages": "English, Albanian",
+  "competitiveHobbies": "Competitive CS2",
+  "creativeHobbies": "Minecraft (Server Hosting + Builds)",
+  "contact": {
+    "email": "juri.malaj@gmail.com",
+    "linkedin": "juri-malaj",
+    "discord": "jurim007"
+  }
+}
