@@ -1,7 +1,7 @@
 name: Update Profile Card
 on:
   schedule:
-    - cron: "0 0 * * *"   # daily
+    - cron: "0 */12 * * *"   #
   workflow_dispatch: {}
 
 jobs:
